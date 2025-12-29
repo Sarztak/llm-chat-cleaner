@@ -27,7 +27,18 @@ for tag in doc.xpath('//svg | //img | //button | //style | //script'):
 out = []
 for div in doc.xpath('//div[@data-testid="user-message"] | //div[starts-with(@class,"font-claude-message")]'):
     role = 'user' if div.get('data-testid') else 'assistant'
-    out.append({'role': role, 'html': html.tostring(div, encoding='unicode').strip(), 'created_at': created_at})
+
+    # strip ALL attributes except href on <a>
+    for el in div.iter():
+        if el.tag == 'a':
+            href = el.get('href')
+            el.attrib.clear()
+            if href:
+                el.set('href', href)
+        else:
+            el.attrib.clear()
+
+    out.append({'role': role, 'html': html.tostring(div, encoding='unicode').strip()})
 
 # with open('chat.jsonl', 'w', encoding='utf8') as f:
 #     for turn in out:
