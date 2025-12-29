@@ -1,5 +1,5 @@
 import json, sys, re
-from lxml import html, etree
+from lxml import html
 
 # parse the file directly given the file path as first argument
 doc = html.parse(sys.argv[1])
@@ -37,6 +37,13 @@ for div in doc.xpath('//div[@data-testid="user-message"] | //div[starts-with(@cl
                 el.set('href', href)
         else:
             el.attrib.clear()
+
+    # strip unsupported tags but keep their text
+    unsupported = {'span', 'div', 'section', 'article', 'nav', 'header', 'footer'}
+    for tag in div.xpath('.//*'):
+        if tag.tag in unsupported:
+            # unwrap: remove tag, keep text
+            tag.drop_tag()
 
     out.append({'role': role, 'html': html.tostring(div, encoding='unicode').strip()})
 
