@@ -24,7 +24,7 @@ for tag in doc.xpath('//svg | //img | //button | //style | //script'):
 # breakpoint()
 
 # 3. collect the cleaned assistant blocks
-out = []
+out, html_content = [], []
 for div in doc.xpath('//div[@data-testid="user-message"] | //div[starts-with(@class,"font-claude-message")]'):
     role = 'user' if div.get('data-testid') else 'assistant'
 
@@ -45,11 +45,15 @@ for div in doc.xpath('//div[@data-testid="user-message"] | //div[starts-with(@cl
             # unwrap: remove tag, keep text
             tag.drop_tag()
 
-    out.append({'role': role, 'html': html.tostring(div, encoding='unicode').strip()})
+    turn = html.tostring(div, encoding='unicode').strip()
+    html_role_appened = f"<div><strong>{role}:</strong><br>{turn}</div><hr>"
+    out.append({'role': role, 'html': html_role_appened})
+    html_content.append(html_role_appened)
 
-# with open('chat.jsonl', 'w', encoding='utf8') as f:
-#     for turn in out:
-#         f.write(json.dumps(turn, ensure_ascii=False) + '\n')
+# Write to HTML file
+with open('conversation.html', 'w', encoding='utf8') as f:
+    f.write('\n'.join(html_content))
 
+# Write to json file
 with open('stripped.json', 'w', encoding='utf8') as f:
     json.dump(out, f, ensure_ascii=False, indent=2)
