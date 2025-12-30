@@ -3,112 +3,77 @@
 % Packages
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{mathptmx} % Times-like font (similar to Manning publications)
+\usepackage{mathptmx} % Times-like font
 \usepackage[margin=1in]{geometry}
 \usepackage{xcolor}
-\usepackage{tikz}
-\usepackage{tcolorbox}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 \usepackage{enumitem}
 
-% Color definitions
-\definecolor{usercolor}{RGB}{245,87,108}
-\definecolor{userbg}{RGB}{255,245,245}
-\definecolor{assistantcolor}{RGB}{0,242,254}
-\definecolor{assistantbg}{RGB}{240,249,255}
-\definecolor{headergrad1}{RGB}{102,126,234}
-\definecolor{headergrad2}{RGB}{118,75,162}
+% Color definitions - subtle, professional
+\definecolor{primary}{RGB}{102,126,234}
+\definecolor{secondary}{RGB}{118,75,162}
+\definecolor{lightgray}{RGB}{128,128,128}
 
-% Box styles for messages
-\tcbuselibrary{skins,breakable}
+% Chapter styling - clean and simple
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}
+  {\chaptertitlename\ \thechapter}
+  {20pt}
+  {\Huge}
 
-\newtcolorbox{usermessage}{
-    enhanced,
-    breakable,
-    colback=userbg,
-    colframe=usercolor,
-    left=5mm,
-    right=5mm,
-    top=5mm,
-    bottom=5mm,
-    arc=3mm,
-    boxrule=0pt,
-    leftrule=4pt,
-    fontupper=\normalsize,
-    before skip=20pt,
-    after skip=20pt
-}
-
-\newtcolorbox{assistantmessage}{
-    enhanced,
-    breakable,
-    colback=assistantbg,
-    colframe=assistantcolor,
-    left=5mm,
-    right=5mm,
-    top=5mm,
-    bottom=5mm,
-    arc=3mm,
-    boxrule=0pt,
-    leftrule=4pt,
-    fontupper=\normalsize,
-    before skip=20pt,
-    after skip=20pt
-}
-
-% Section styling
+% Section styling - minimal underline
 \titleformat{\section}
-  {\Large\bfseries\color{headergrad2}}
+  {\Large\bfseries\color{secondary}}
   {\thesection}
   {1em}
   {}
-  [\titlerule]
+  [\vspace{2pt}{\titlerule[0.8pt]}]
 
-% Header/Footer
+% Subsection styling
+\titleformat{\subsection}
+  {\large\bfseries}
+  {\thesubsection}
+  {1em}
+  {}
+
+% Header/Footer - clean and minimal
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[LE,RO]{\thepage}
-\fancyhead[LO]{\nouppercase{\rightmark}}
-\fancyhead[RE]{\nouppercase{\leftmark}}
+\fancyhead[LE]{\thepage}
+\fancyhead[RO]{\thepage}
+\fancyhead[LO]{\small\itshape\nouppercase{\rightmark}}
+\fancyhead[RE]{\small\itshape\nouppercase{\leftmark}}
 \renewcommand{\headrulewidth}{0.4pt}
 
-% Title page command
+% Custom title page
 \newcommand{\createtitlepage}{
     \begin{titlepage}
-        \begin{tikzpicture}[remember picture,overlay]
-            \fill[headergrad1] (current page.north west) rectangle ([yshift=-8cm]current page.north east);
-        \end{tikzpicture}
-        
         \vspace*{3cm}
         \begin{center}
-            {\Huge\bfseries\color{white} Conversation Archive}\\[0.5cm]
-            {\Large\itshape\color{white} A dialogue on problem-solving and innovation}\\[2cm]
+            {\Huge\bfseries Conversation Archive}\\[0.5cm]
+            {\Large\itshape A dialogue on problem-solving and innovation}\\[2cm]
             
             \vfill
             
+            {\large Generated with Claude}\\
+            {\large \today}
         \end{center}
     \end{titlepage}
 }
 
-% Message header commands
-\newcommand{\userheader}{
-    \noindent
-    \begin{tikzpicture}
-        \node[circle, fill=usercolor, text=white, minimum size=1cm, font=\Large\bfseries] at (0,0) {U};
-        \node[anchor=west, font=\small\bfseries\scshape, text=gray] at (0.7,0) {User};
-    \end{tikzpicture}
-    \vspace{5mm}
-}
+% Message styling - simple indentation and labels
+\newenvironment{usermessage}
+  {\par\addvspace{12pt}\noindent\textcolor{lightgray}{\rule{3pt}{12pt}}\hspace{8pt}%
+   \begin{minipage}[t]{\dimexpr\textwidth-11pt\relax}
+   \textbf{\textcolor{secondary}{User}}\\[6pt]}
+  {\end{minipage}\par\addvspace{12pt}}
 
-\newcommand{\assistantheader}{
-    \noindent
-    \begin{tikzpicture}
-        \node[circle, fill=assistantcolor, text=white, minimum size=1cm, font=\Large\bfseries] at (0,0) {A};
-        \node[anchor=west, font=\small\bfseries\scshape, text=gray] at (0.7,0) {Assistant};
-    \end{tikzpicture}
-    \vspace{5mm}
-}
+\newenvironment{assistantmessage}
+  {\par\addvspace{12pt}\noindent\textcolor{lightgray}{\rule{3pt}{12pt}}\hspace{8pt}%
+   \begin{minipage}[t]{\dimexpr\textwidth-11pt\relax}
+   \textbf{\textcolor{primary}{Assistant}}\\[6pt]}
+  {\end{minipage}\par\addvspace{12pt}}
 
 % Document begins
 \begin{document}
@@ -119,8 +84,6 @@
 
 \chapter{Initial Exchange}
 
-\section*{User Query}
-\userheader
 \begin{usermessage}
 Yes, the prodigal son returns, thanks for announcing that so loudly.
 
@@ -135,10 +98,6 @@ That aside, they are actually expecting us to find out a problem, and not just t
 ``Will be viewed favorably'' --- what does that mean? Are they telling us that they have completely submitted to vibes and hype of AI and are just edging until someone gives them a divine agent that will automatically maximize their profit? This is all just so hype minded and absolutely not level headed.
 \end{usermessage}
 
-\newpage
-
-\section*{Assistant Response}
-\assistantheader
 \begin{assistantmessage}
 I can see you're feeling frustrated with what appears to be a ``solution-first, problem-second'' approach in this hackathon. Your instincts as a problem solver are spot-on --- the document does read like they've predetermined that agents/AI are the answer before clearly defining the problem.
 
@@ -154,7 +113,7 @@ This actually gives you a clue --- they're dealing with information scattered ac
 
 \subsection*{Your research strategy is solid, but consider this approach:}
 
-\begin{itemize}[leftmargin=*]
+\begin{itemize}[leftmargin=*,topsep=6pt]
     \item Focus on publicly documented pain points in aviation that United specifically faces
     \item Look for problems where human decision-makers are overwhelmed by information volume/complexity
     \item Find scenarios where multiple data sources need to be synthesized rapidly
@@ -162,7 +121,7 @@ This actually gives you a clue --- they're dealing with information scattered ac
 
 \subsection*{Realistic problem areas where agents might actually help:}
 
-\begin{itemize}[leftmargin=*]
+\begin{itemize}[leftmargin=*,topsep=6pt]
     \item Disruption cascade analysis (when one delay triggers multiple downstream effects)
     \item Regulatory compliance monitoring across thousands of daily operations
     \item Crew scheduling optimization during irregular operations
