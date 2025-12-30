@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.10.26)  30 DEC 2025 07:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.10.26)  30 DEC 2025 12:29
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -7,19 +7,20 @@ entering extended mode
 (c:/Users/sar31/Documents/GitHub/llm_chat_clearner/pdf_latex/main.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
-(C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
-Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
-(C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/base\size11.clo
-File: size11.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
+(C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/base\book.cls
+Document Class: book 2023/05/17 v1.4n Standard LaTeX document class
+(C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/base\bk11.clo
+File: bk11.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count187
-\c@section=\count188
-\c@subsection=\count189
-\c@subsubsection=\count190
-\c@paragraph=\count191
-\c@subparagraph=\count192
-\c@figure=\count193
-\c@table=\count194
+\c@chapter=\count188
+\c@section=\count189
+\c@subsection=\count190
+\c@subsubsection=\count191
+\c@paragraph=\count192
+\c@subparagraph=\count193
+\c@figure=\count194
+\c@table=\count195
 \abovecaptionskip=\skip48
 \belowcaptionskip=\skip49
 \bibindent=\dimen140
@@ -29,6 +30,41 @@ Package: inputenc 2021/02/14 v1.3d Input encoding file
 \inpenc@posthook=\toks18
 ) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
 Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\mathptmx.sty
+Package: mathptmx 2020/03/25 PSNFSS-v9.3 Times w/ Math, improved (SPQR, WaS) 
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 28.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/ztmcm/m/n on input line 28.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/ztmcm/m/n on input line 28.
+LaTeX Font Info:    Redeclaring symbol font `letters' on input line 29.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/ztmcm/m/it on input line 29.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/ztmcm/m/it on input line 29.
+LaTeX Font Info:    Redeclaring symbol font `symbols' on input line 30.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> OMS/ztmcm/m/n on input line 30.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> OMS/ztmcm/m/n on input line 30.
+LaTeX Font Info:    Redeclaring symbol font `largesymbols' on input line 31.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/ztmcm/m/n on input line 31.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/ztmcm/m/n on input line 31.
+\symbold=\mathgroup4
+\symitalic=\mathgroup5
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/ptm/bx/n on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/ptm/bx/n on input line 34.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/ptm/m/it on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/ptm/m/it on input line 35.
+LaTeX Info: Redefining \hbar on input line 50.
 ) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
  (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
@@ -39,9 +75,9 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
  (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
 Package: iftex 2022/02/03 v1.0f TeX engine tests
 ))
-\Gm@cnth=\count195
-\Gm@cntv=\count196
-\c@Gm@tempcnt=\count197
+\Gm@cnth=\count196
+\Gm@cntv=\count197
+\c@Gm@tempcnt=\count198
 \Gm@bindingoffset=\dimen141
 \Gm@wd@mp=\dimen142
 \Gm@odd@mp=\dimen143
@@ -69,207 +105,32 @@ Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1370.
 Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1371.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1372.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1373.
-) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/crimson\crimson.sty
-Package: crimson 2024/12/08 (Bob Tennent) Supports crimson fonts for all LaTeX engines. 
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifxetex.sty
-Package: ifxetex 2019/10/25 v0.7 ifxetex legacy package. Use iftex instead.
-) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifluatex.sty
-Package: ifluatex 2019/10/25 v1.5 ifluatex legacy package. Use iftex instead.
-) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/base\textcomp.sty
-Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
-) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/xkeyval\xkeyval.sty
-Package: xkeyval 2022/06/16 v2.9 package option processing (HA)
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkeyval.tex (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkvutils.tex
-\XKV@toks=\toks21
-\XKV@tempa@toks=\toks22
 )
-\XKV@depth=\count198
-File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
-)) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
-Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
-) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/fontaxes\fontaxes.sty
-Package: fontaxes 2025-05-24 v2.0.1 Font selection axes (deprecated)
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/fontaxes\fontaxes-v1.sty
-Package: fontaxes 2020/07/21 v1.0e Font selection axes
-LaTeX Info: Redefining \upshape on input line 29.
-LaTeX Info: Redefining \itshape on input line 31.
-LaTeX Info: Redefining \slshape on input line 33.
-LaTeX Info: Redefining \swshape on input line 35.
-LaTeX Info: Redefining \scshape on input line 37.
-LaTeX Info: Redefining \sscshape on input line 39.
-LaTeX Info: Redefining \ulcshape on input line 41.
-LaTeX Info: Redefining \textsw on input line 47.
-LaTeX Info: Redefining \textssc on input line 48.
-LaTeX Info: Redefining \textulc on input line 49.
-))) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/sourcesanspro\sourcesanspro.sty
-Package: sourcesanspro 2018/05/19 v2.7 Adobe's Source Sans Pro typeface
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
-Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/ly1\ly1enc.def
-File: ly1enc.def 2022/06/11 v0.8 TeX 'n ANSI encoding (DPC/KB)
-Now handling font encoding LY1 ...
-... processing UTF-8 mapping file for font encoding LY1
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/base\ly1enc.dfu
-File: ly1enc.dfu 2022/06/07 v1.3c UTF-8 support
-   defining Unicode char U+00A0 (decimal 160)
-   defining Unicode char U+00A1 (decimal 161)
-   defining Unicode char U+00A2 (decimal 162)
-   defining Unicode char U+00A3 (decimal 163)
-   defining Unicode char U+00A4 (decimal 164)
-   defining Unicode char U+00A5 (decimal 165)
-   defining Unicode char U+00A6 (decimal 166)
-   defining Unicode char U+00A7 (decimal 167)
-   defining Unicode char U+00AA (decimal 170)
-   defining Unicode char U+00AB (decimal 171)
-   defining Unicode char U+00AD (decimal 173)
-   defining Unicode char U+00AE (decimal 174)
-   defining Unicode char U+00B0 (decimal 176)
-   defining Unicode char U+00B5 (decimal 181)
-   defining Unicode char U+00B6 (decimal 182)
-   defining Unicode char U+00B7 (decimal 183)
-   defining Unicode char U+00BA (decimal 186)
-   defining Unicode char U+00BB (decimal 187)
-   defining Unicode char U+00BC (decimal 188)
-   defining Unicode char U+00BD (decimal 189)
-   defining Unicode char U+00BE (decimal 190)
-   defining Unicode char U+00BF (decimal 191)
-   defining Unicode char U+00C0 (decimal 192)
-   defining Unicode char U+00C1 (decimal 193)
-   defining Unicode char U+00C2 (decimal 194)
-   defining Unicode char U+00C3 (decimal 195)
-   defining Unicode char U+00C4 (decimal 196)
-   defining Unicode char U+00C5 (decimal 197)
-   defining Unicode char U+00C6 (decimal 198)
-   defining Unicode char U+00C7 (decimal 199)
-   defining Unicode char U+00C8 (decimal 200)
-   defining Unicode char U+00C9 (decimal 201)
-   defining Unicode char U+00CA (decimal 202)
-   defining Unicode char U+00CB (decimal 203)
-   defining Unicode char U+00CC (decimal 204)
-   defining Unicode char U+00CD (decimal 205)
-   defining Unicode char U+00CE (decimal 206)
-   defining Unicode char U+00CF (decimal 207)
-   defining Unicode char U+00D0 (decimal 208)
-   defining Unicode char U+00D1 (decimal 209)
-   defining Unicode char U+00D2 (decimal 210)
-   defining Unicode char U+00D3 (decimal 211)
-   defining Unicode char U+00D4 (decimal 212)
-   defining Unicode char U+00D5 (decimal 213)
-   defining Unicode char U+00D6 (decimal 214)
-   defining Unicode char U+00D8 (decimal 216)
-   defining Unicode char U+00D9 (decimal 217)
-   defining Unicode char U+00DA (decimal 218)
-   defining Unicode char U+00DB (decimal 219)
-   defining Unicode char U+00DC (decimal 220)
-   defining Unicode char U+00DD (decimal 221)
-   defining Unicode char U+00DE (decimal 222)
-   defining Unicode char U+00DF (decimal 223)
-   defining Unicode char U+00E0 (decimal 224)
-   defining Unicode char U+00E1 (decimal 225)
-   defining Unicode char U+00E2 (decimal 226)
-   defining Unicode char U+00E3 (decimal 227)
-   defining Unicode char U+00E4 (decimal 228)
-   defining Unicode char U+00E5 (decimal 229)
-   defining Unicode char U+00E6 (decimal 230)
-   defining Unicode char U+00E7 (decimal 231)
-   defining Unicode char U+00E8 (decimal 232)
-   defining Unicode char U+00E9 (decimal 233)
-   defining Unicode char U+00EA (decimal 234)
-   defining Unicode char U+00EB (decimal 235)
-   defining Unicode char U+00EC (decimal 236)
-   defining Unicode char U+00ED (decimal 237)
-   defining Unicode char U+00EE (decimal 238)
-   defining Unicode char U+00EF (decimal 239)
-   defining Unicode char U+00F0 (decimal 240)
-   defining Unicode char U+00F1 (decimal 241)
-   defining Unicode char U+00F2 (decimal 242)
-   defining Unicode char U+00F3 (decimal 243)
-   defining Unicode char U+00F4 (decimal 244)
-   defining Unicode char U+00F5 (decimal 245)
-   defining Unicode char U+00F6 (decimal 246)
-   defining Unicode char U+00F8 (decimal 248)
-   defining Unicode char U+00F9 (decimal 249)
-   defining Unicode char U+00FA (decimal 250)
-   defining Unicode char U+00FB (decimal 251)
-   defining Unicode char U+00FC (decimal 252)
-   defining Unicode char U+00FD (decimal 253)
-   defining Unicode char U+00FE (decimal 254)
-   defining Unicode char U+00FF (decimal 255)
-   defining Unicode char U+0131 (decimal 305)
-   defining Unicode char U+0141 (decimal 321)
-   defining Unicode char U+0142 (decimal 322)
-   defining Unicode char U+0152 (decimal 338)
-   defining Unicode char U+0153 (decimal 339)
-   defining Unicode char U+0160 (decimal 352)
-   defining Unicode char U+0161 (decimal 353)
-   defining Unicode char U+0174 (decimal 372)
-   defining Unicode char U+0175 (decimal 373)
-   defining Unicode char U+0176 (decimal 374)
-   defining Unicode char U+0177 (decimal 375)
-   defining Unicode char U+0178 (decimal 376)
-   defining Unicode char U+017D (decimal 381)
-   defining Unicode char U+017E (decimal 382)
-   defining Unicode char U+0192 (decimal 402)
-   defining Unicode char U+0218 (decimal 536)
-   defining Unicode char U+0219 (decimal 537)
-   defining Unicode char U+021A (decimal 538)
-   defining Unicode char U+021B (decimal 539)
-   defining Unicode char U+0237 (decimal 567)
-   defining Unicode char U+02C6 (decimal 710)
-   defining Unicode char U+02DC (decimal 732)
-   defining Unicode char U+2013 (decimal 8211)
-   defining Unicode char U+2014 (decimal 8212)
-   defining Unicode char U+201C (decimal 8220)
-   defining Unicode char U+201D (decimal 8221)
-   defining Unicode char U+2020 (decimal 8224)
-   defining Unicode char U+2021 (decimal 8225)
-   defining Unicode char U+2022 (decimal 8226)
-   defining Unicode char U+2026 (decimal 8230)
-   defining Unicode char U+2030 (decimal 8240)
-   defining Unicode char U+2039 (decimal 8249)
-   defining Unicode char U+203A (decimal 8250)
-   defining Unicode char U+2122 (decimal 8482)
-   defining Unicode char U+FB00 (decimal 64256)
-   defining Unicode char U+FB01 (decimal 64257)
-   defining Unicode char U+FB02 (decimal 64258)
-   defining Unicode char U+FB03 (decimal 64259)
-   defining Unicode char U+FB04 (decimal 64260)
-   defining Unicode char U+FB05 (decimal 64261)
-   defining Unicode char U+FB06 (decimal 64262)
-))
-LaTeX Font Info:    Trying to load font information for T1+Crimson-TLF on input line 112.
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/crimson\t1crimson-tlf.fd
-File: T1Crimson-TLF.fd 2024/12/08 (autoinst) Font definitions for T1/Crimson-TLF.
-)
-LaTeX Font Info:    Font shape `T1/Crimson-TLF/m/n' will be
-(Font)              scaled to size 10.95pt on input line 112.
-)) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
+LaTeX Font Info:    Trying to load font information for T1+ptm on input line 51.
+ (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1ptm.fd
+File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
+) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count199
 \l__pdf_internal_box=\box51
 ) (main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for LY1/ptm/m/n on input line 41.
-LaTeX Font Info:    Trying to load font information for LY1+ptm on input line 41.
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/ly1\ly1ptm.fd
-File: ly1ptm.fd 2001/02/01 font definitions for LY1/ptm using Berry names.
-)
-LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+\big@size=\dimen149
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -278,7 +139,7 @@ LaTeX Font Info:    ... okay on input line 41.
 * paper: a4paper
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
-* modes: 
+* modes: twoside 
 * h-part:(L,W,R)=(72.26999pt, 452.9679pt, 72.26999pt)
 * v-part:(T,H,B)=(72.26999pt, 686.05309pt, 86.72377pt)
 * \paperwidth=597.50787pt
@@ -287,74 +148,84 @@ LaTeX Font Info:    ... okay on input line 41.
 * \textheight=686.05309pt
 * \oddsidemargin=0.0pt
 * \evensidemargin=0.0pt
-* \topmargin=-37.0pt
+* \topmargin=-31.8738pt
 * \headheight=12.0pt
-* \headsep=25.0pt
+* \headsep=19.8738pt
 * \topskip=11.0pt
-* \footskip=30.0pt
-* \marginparwidth=50.0pt
-* \marginparsep=10.0pt
+* \footskip=27.46295pt
+* \marginparwidth=106.0pt
+* \marginparsep=7.0pt
 * \columnsep=10.0pt
 * \skip\footins=10.0pt plus 4.0pt minus 2.0pt
 * \hoffset=0.0pt
 * \voffset=0.0pt
 * \mag=1000
 * \@twocolumnfalse
-* \@twosidefalse
-* \@mparswitchfalse
+* \@twosidetrue
+* \@mparswitchtrue
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count266
-\scratchdimen=\dimen149
+\scratchdimen=\dimen150
 \scratchbox=\box52
 \nofMPsegments=\count267
 \nofMParguments=\count268
-\everyMPshowfont=\toks23
+\everyMPshowfont=\toks21
 \MPscratchCnt=\count269
-\MPscratchDim=\dimen150
+\MPscratchDim=\dimen151
 \MPnumerator=\count270
 \makeMPintoPDFobject=\count271
-\everyMPtoPDFconversion=\toks24
+\everyMPtoPDFconversion=\toks22
 )
-\c@mv@tabular=\count272
-\c@mv@boldtabular=\count273
-LaTeX Font Info:    Trying to load font information for T1+SourceSansPro-TLF on input line 43.
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/sourcesanspro\t1sourcesanspro-tlf.fd
-File: T1SourceSansPro-TLF.fd 2020/01/19 (autoinst) Font definitions for T1/SourceSansPro-TLF.
+LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line 55.
+ (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ztmcm.fd
+File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
 )
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/m/n' aliased to
-(Font)              `T1/SourceSansPro-TLF/regular/n' on input line 43.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/regular/n' will be
-(Font)              scaled to size 10.95pt on input line 43.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/m/n' aliased to
-(Font)              `T1/SourceSansPro-TLF/regular/n' on input line 43.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/regular/n' will be
-(Font)              scaled to size 14.4pt on input line 43.
-LaTeX Font Info:    Font shape `T1/Crimson-TLF/m/n' will be
-(Font)              scaled to size 11.0pt on input line 43.
+LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line 55.
+ (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omlztmcm.fd
+File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line 55.
+ (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omsztmcm.fd
+File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line 55.
+ (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omxztmcm.fd
+File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 55.
+ (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 55.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 55.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 55.
  [1
 
-{C:/Users/sar31/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/sar31/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/sourcesanspro/a_emkxm5.enc}{C:/Users/sar31/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/crimson/crm_ltoc2m.enc}] (main.aux)
+{C:/Users/sar31/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/sar31/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}] (main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 3261 strings out of 474486
- 56852 string characters out of 5743754
- 1928542 words of memory out of 5000000
- 25525 multiletter control sequences out of 15000+600000
- 580271 words of font info for 44 fonts, out of 8000000 for 9000
+ 2472 strings out of 474486
+ 38062 string characters out of 5743754
+ 1925542 words of memory out of 5000000
+ 24759 multiletter control sequences out of 15000+600000
+ 577742 words of font info for 63 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,5n,65p,447b,236s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/sar31/AppData/Local/Programs/MiKTeX/fonts/type1/kosch/crimson/Crimson-Roman.pfb><C:/Users/sar31/AppData/Local/Programs/MiKTeX/fonts/type1/adobe/sourcesanspro/SourceSansPro-Regular.pfb>
-Output written on main.pdf (1 page, 93500 bytes).
+ 57i,5n,65p,329b,180s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/sar31/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/sar31/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb>
+Output written on main.pdf (1 page, 22885 bytes).
 PDF statistics:
- 18 PDF objects out of 1000 (max. 8388607)
+ 17 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
