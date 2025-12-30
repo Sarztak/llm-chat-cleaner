@@ -1,40 +1,42 @@
-\documentclass[11pt,a4paper]{book}
+\documentclass[11pt,a4paper]{article}
 
 % Packages
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern} % Latin Modern - closer to Manning's font
 \usepackage[margin=1in,bottom=1.2in]{geometry}
 \usepackage{xcolor}
-\usepackage{titlesec}
 
-% Color definitions - very subtle
-\definecolor{headercolor}{RGB}{100,100,100}
+% Load fonts
+\usepackage{crimson} % Body text - Minion Pro alternative
+\usepackage[sfdefault]{sourcesanspro} % Headings - Myriad Pro alternative
+
+% Color definitions - Manning style blue
+\definecolor{manning}{RGB}{71,118,214}
 
 % Increase line spacing for better readability
-\linespread{1.15}
+\linespread{1.2}
 
 % Adjust paragraph spacing
-\setlength{\parskip}{0.6em}
+\setlength{\parskip}{0.7em}
 \setlength{\parindent}{0pt}
 
-% Message styling - simple and elegant like Manning
-\newenvironment{socratesmessage}
-  {\par\vspace{18pt}
-   \noindent\hspace{0.6\textwidth}\textit{\large Socrates}\\[2pt]
-   \noindent\rule{\textwidth}{0.5pt}\\[8pt]
-   \fontsize{11}{16}\selectfont} % Increased font size and line height
-  {\par\vspace{18pt}}
-
-\newenvironment{oraclmessage}
-  {\par\vspace{18pt}
-   \noindent\hspace{0.6\textwidth}\textit{\large The Oracle}\\[2pt]
-   \noindent\rule{\textwidth}{0.5pt}\\[8pt]
-   \fontsize{11}{16}\selectfont} % Increased font size and line height
-  {\par\vspace{18pt}}
-
-% Remove page numbers for this example
+% Remove page numbers
 \pagestyle{empty}
+
+% Message styling
+\newenvironment{socratesmessage}
+  {\par\vspace{24pt}
+   \noindent\textcolor{manning}{\rule{\textwidth}{1.2pt}}\\[4pt]
+   \noindent\hfill{\sffamily\Large\color{manning}Socrates}\\[12pt]
+   \fontsize{11}{17}\selectfont}
+  {\par\vspace{24pt}}
+
+\newenvironment{oraclemessage}
+  {\par\vspace{24pt}
+   \noindent\textcolor{manning}{\rule{\textwidth}{1.2pt}}\\[4pt]
+   \noindent\hfill{\sffamily\Large\color{manning}The Oracle}\\[12pt]
+   \fontsize{11}{17}\selectfont}
+  {\par\vspace{24pt}}
 
 \begin{document}
 
@@ -43,7 +45,7 @@ I find myself in a peculiar predicament, one that requires both clarity of thoug
 
 Yet here I stand, confronted by what appears to be an exercise in circular reasoning. They present us with a solution and ask us to find the problem it solves. Is this not backwards? Should we not first understand the nature of the difficulty before prescribing remedies?
 
-Consider this: A grand institution announces a challenge, yet provides no clear statement of what troubles them. Instead, they insist that whatever solution we propose must incorporate specific technologies---agents, frameworks, and generative models. They speak of "viewing favorably" certain approaches, as if truth itself could be swayed by preference.
+Consider this: A grand institution announces a challenge, yet provides no clear statement of what troubles them. Instead, they insist that whatever solution we propose must incorporate specific technologies---agents, frameworks, and generative models. They speak of ``viewing favorably'' certain approaches, as if truth itself could be swayed by preference.
 
 What concerns me most is this assumption that complex tools are needed without first examining whether simpler methods might suffice. Have we become so enamored with novelty that we've forgotten to ask the fundamental question: Is there truly a problem here that demands such elaborate intervention?
 
@@ -53,25 +55,5 @@ Perhaps I'm viewing this too narrowly. Perhaps the challenge itself is an invita
 
 Tell me, what is your perspective on this matter? How should one approach a problem that hasn't yet been clearly defined?
 \end{socratesmessage}
-
-\newpage
-
-\begin{oraclmessage}
-Your instincts serve you well, Socrates. What you perceive as circular reasoning may indeed be a form of inverted problem-solving, though not necessarily an invalid one.
-
-Let me offer you a different lens through which to view this challenge. Sometimes, institutions possess knowledge they cannot freely share---proprietary insights, competitive sensitivities, or confidential operational details. They cannot tell you explicitly what troubles them, yet they hope that by describing the tools they believe might help, the right minds will intuit the underlying challenges.
-
-The emphasis on retrieval-augmented generation and multi-intent queries reveals something important: They struggle with information fragmentation. Their knowledge exists in silos---structured databases alongside unstructured documents, historical records mixed with real-time data, regulatory requirements interwoven with operational constraints.
-
-Consider the nature of large organizations. They are not single entities with unified knowledge, but rather collections of specialized domains that often fail to communicate effectively with one another. When a crisis emerges, decision-makers must synthesize information from multiple sources quickly, each speaking in its own language, each requiring its own form of interpretation.
-
-The "agent" they seek is not merely a technological construct but a bridge---something that can traverse these domains, understand their different dialects, and present coherent insights to human decision-makers who lack the time or capacity to do this synthesis themselves.
-
-You are right to be skeptical of complexity for its own sake. Yet sometimes, the simplest adequate solution to a genuinely complex problem is itself necessarily sophisticated. The question is not whether to use these tools, but whether a problem exists that genuinely warrants them.
-
-Your research strategy is sound: Look for publicly documented challenges in their domain. Examine where human judgment becomes overwhelmed not by difficulty but by volume and velocity. Find the intersection of multiple data streams that must be reconciled in real time.
-
-That is where these tools might prove their worth---not in replacing human wisdom, but in augmenting human capacity to process information at scales that exceed our natural limitations.
-\end{oraclmessage}
 
 \end{document}
