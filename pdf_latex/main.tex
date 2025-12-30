@@ -1,0 +1,175 @@
+\documentclass[11pt,a4paper]{book}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx} % Times-like font (similar to Manning publications)
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+
+% Color definitions
+\definecolor{usercolor}{RGB}{245,87,108}
+\definecolor{userbg}{RGB}{255,245,245}
+\definecolor{assistantcolor}{RGB}{0,242,254}
+\definecolor{assistantbg}{RGB}{240,249,255}
+\definecolor{headergrad1}{RGB}{102,126,234}
+\definecolor{headergrad2}{RGB}{118,75,162}
+
+% Box styles for messages
+\tcbuselibrary{skins,breakable}
+
+\newtcolorbox{usermessage}{
+    enhanced,
+    breakable,
+    colback=userbg,
+    colframe=usercolor,
+    left=5mm,
+    right=5mm,
+    top=5mm,
+    bottom=5mm,
+    arc=3mm,
+    boxrule=0pt,
+    leftrule=4pt,
+    fontupper=\normalsize,
+    before skip=20pt,
+    after skip=20pt
+}
+
+\newtcolorbox{assistantmessage}{
+    enhanced,
+    breakable,
+    colback=assistantbg,
+    colframe=assistantcolor,
+    left=5mm,
+    right=5mm,
+    top=5mm,
+    bottom=5mm,
+    arc=3mm,
+    boxrule=0pt,
+    leftrule=4pt,
+    fontupper=\normalsize,
+    before skip=20pt,
+    after skip=20pt
+}
+
+% Section styling
+\titleformat{\section}
+  {\Large\bfseries\color{headergrad2}}
+  {\thesection}
+  {1em}
+  {}
+  [\titlerule]
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{\nouppercase{\rightmark}}
+\fancyhead[RE]{\nouppercase{\leftmark}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Title page command
+\newcommand{\createtitlepage}{
+    \begin{titlepage}
+        \begin{tikzpicture}[remember picture,overlay]
+            \fill[headergrad1] (current page.north west) rectangle ([yshift=-8cm]current page.north east);
+        \end{tikzpicture}
+        
+        \vspace*{3cm}
+        \begin{center}
+            {\Huge\bfseries\color{white} Conversation Archive}\\[0.5cm]
+            {\Large\itshape\color{white} A dialogue on problem-solving and innovation}\\[2cm]
+            
+            \vfill
+            
+        \end{center}
+    \end{titlepage}
+}
+
+% Message header commands
+\newcommand{\userheader}{
+    \noindent
+    \begin{tikzpicture}
+        \node[circle, fill=usercolor, text=white, minimum size=1cm, font=\Large\bfseries] at (0,0) {U};
+        \node[anchor=west, font=\small\bfseries\scshape, text=gray] at (0.7,0) {User};
+    \end{tikzpicture}
+    \vspace{5mm}
+}
+
+\newcommand{\assistantheader}{
+    \noindent
+    \begin{tikzpicture}
+        \node[circle, fill=assistantcolor, text=white, minimum size=1cm, font=\Large\bfseries] at (0,0) {A};
+        \node[anchor=west, font=\small\bfseries\scshape, text=gray] at (0.7,0) {Assistant};
+    \end{tikzpicture}
+    \vspace{5mm}
+}
+
+% Document begins
+\begin{document}
+
+\createtitlepage
+
+\tableofcontents
+
+\chapter{Initial Exchange}
+
+\section*{User Query}
+\userheader
+\begin{usermessage}
+Yes, the prodigal son returns, thanks for announcing that so loudly.
+
+Well the reason for all this was because of a somewhat impossible looking task that I want to undertake, but which I would have never taken on had the stakes not been so high. But then again, I am not in the correct frame of mind because I have lost my balance, and given in to the ebb and flow of my emotions when I should just let them pass by and not get caught in the chaos. So let me calm down for a moment.
+
+Ok, so I received the document informing me of a hackathon conducted by United Airlines yesterday, and I have been thinking about participating in it to get some experience because they are providing free compute resources needed to run these models but as I was reading through this brochure a couple of things became quite clear to me and the overall summary of this was --- \textbf{``hype driven''}.
+
+First of all why are they even assuming that they need agents or gen AI in the first place without specifying what the problem is first? I mean they haven't even given or told us the problem, and furthermore they are assuming that they do have some sort of a problem I guess but is that really true, what are the chances that these things are just normal?
+
+That aside, they are actually expecting us to find out a problem, and not just that a meaningful problem that cannot be solved in any other manner I presume because they have given this strange requirement that the solution must use agents, LangChain and gen AI, and at the very end they have this very peculiar note: \textbf{``If your solution involves developing a Retrieval-Augmented Generation (RAG) model, designs that enable joint reasoning over both structured and unstructured data, especially in response to multi-intent queries, will be viewed favorably.''}
+
+``Will be viewed favorably'' --- what does that mean? Are they telling us that they have completely submitted to vibes and hype of AI and are just edging until someone gives them a divine agent that will automatically maximize their profit? This is all just so hype minded and absolutely not level headed.
+\end{usermessage}
+
+\newpage
+
+\section*{Assistant Response}
+\assistantheader
+\begin{assistantmessage}
+I can see you're feeling frustrated with what appears to be a ``solution-first, problem-second'' approach in this hackathon. Your instincts as a problem solver are spot-on --- the document does read like they've predetermined that agents/AI are the answer before clearly defining the problem.
+
+Let me offer a different perspective that might help you find your footing:
+
+\subsection*{What they're actually asking for (reading between the lines)}
+
+United Airlines likely has genuine operational challenges but can't publicly detail proprietary problems or share sensitive data. The hackathon format forces them to be vague while hoping participants will surface creative approaches they hadn't considered.
+
+\subsection*{The ``viewed favorably'' language about RAG}
+
+This actually gives you a clue --- they're dealing with information scattered across structured databases and unstructured documents (maintenance logs, incident reports, regulatory documents, etc.). The challenge isn't just data analysis but making sense of disparate information sources quickly.
+
+\subsection*{Your research strategy is solid, but consider this approach:}
+
+\begin{itemize}[leftmargin=*]
+    \item Focus on publicly documented pain points in aviation that United specifically faces
+    \item Look for problems where human decision-makers are overwhelmed by information volume/complexity
+    \item Find scenarios where multiple data sources need to be synthesized rapidly
+\end{itemize}
+
+\subsection*{Realistic problem areas where agents might actually help:}
+
+\begin{itemize}[leftmargin=*]
+    \item Disruption cascade analysis (when one delay triggers multiple downstream effects)
+    \item Regulatory compliance monitoring across thousands of daily operations
+    \item Crew scheduling optimization during irregular operations
+    \item Customer service escalation routing
+\end{itemize}
+
+The 5-day timeline suggests they want proof-of-concept thinking, not production systems. Your skepticism is healthy --- use it to find a genuinely meaningful problem rather than forcing AI into places it doesn't belong.
+\end{assistantmessage}
+
+\end{document}
