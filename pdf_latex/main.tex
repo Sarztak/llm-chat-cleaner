@@ -3,37 +3,71 @@
 % Packages
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{mathptmx} % Times New Roman equivalent
+\usepackage{mathptmx}
 \usepackage[margin=1in,bottom=1.2in]{geometry}
 \usepackage{xcolor}
+\usepackage{changepage}
 
-% Color definition
-\definecolor{headercolor}{RGB}{90,115,150}
+% Color definitions
+\definecolor{headercolor}{RGB}{65,105,225}
+\definecolor{botcolor}{RGB}{200,80,80}
 
-% Increase line spacing for readability
+% Line spacing
 \linespread{1.0}
 
-% Adjust paragraph spacing
+% Paragraph spacing
 \setlength{\parskip}{0.65em}
 \setlength{\parindent}{0pt}
 
-% Message environment
-\newenvironment{socratesmessage}
+% Disable hyphenation
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+% User prompt environment
+\newenvironment{userprompt}
 {%
   \par\vspace{18pt}
 
-  % Header: BIGGER, bold + italic, right-aligned
   {\raggedleft
-   \fontsize{34}{34}\selectfont 
+   \fontsize{34}{34}\selectfont
    \bfseries\itshape
-   \textcolor{headercolor}{EdgeLord-2715}\par\vspace{-12pt}}
+   \textcolor{headercolor}{User}\par\vspace{-12pt}}
 
-
-  % Underline
   \noindent\textcolor{headercolor}{\rule{\textwidth}{0.6pt}}
 
   \vspace{8pt}
-  \raggedleft
+
+  \everypar{%
+    \parshape 1
+      0.08\textwidth
+      0.92\textwidth
+    \raggedleft
+  }
+
+  \fontsize{13}{21}\selectfont
+}
+{%
+  \par
+  \everypar{}
+  \parshape 0
+  \par\vspace{18pt}
+}
+
+% Bot response environment
+\newenvironment{botresponse}
+{%
+  \par\vspace{18pt}
+
+  % Header: left-aligned
+  {\raggedright
+   \fontsize{34}{34}\selectfont 
+   \bfseries\itshape
+   \textcolor{botcolor}{Bot}\par\vspace{-12pt}}
+
+  % Underline
+  \noindent\textcolor{botcolor}{\rule{\textwidth}{0.6pt}}
+
+  \vspace{8pt}
   \begin{minipage}{0.92\textwidth}
   \fontsize{13}{21}\selectfont 
 }
@@ -41,13 +75,28 @@
   \end{minipage}
   \par\vspace{18pt}
 }
-% Remove page numbers
-\pagestyle{empty}
 
 \begin{document}
 
-\begin{socratesmessage}
-I find myself in a peculiar predicament, one that requires both clarity of thought and precision in action. The matter at hand involves a significant technological undertaking---one that I would typically approach with measured skepticism.
-\end{socratesmessage}
+\begin{userprompt}
+
+yes, the prodigal son returns, thanks for announcing that so loudly,
+
+well the reason for all this was because of a somewhat impossible looking that that I want to undertake, but which I would have never taken on had the stakes not been so high. But then again, I am not in the correct frame of mind because I have lost my balance, and given in to the ebb and flow of my emotions when I should just let them pass by and not get caught in the chaos. So let me calm down for a moment.
+
+Ok, so I received the document informing me of a hackathon conducted by united airlines yesterday, and I have been thinking about participating in it to get some experience because they are providing free compute resources needed to run these model but as I was reading through this brochure a couple of things because quite clear to me and the overall summary of this was - "hype driven".
+
+so first of all why are they even assuming that they needs agents or gen ai in the first place without specifying what the problem is first? I mean they haven't even given or told us the problem, and further more they are assuming that they do have some sort of a problem I guess but is that really true, what are the chances that these things are just normal? That aside, they are actually expecting us to find out a problem, and not just that a meaningful problem that cannot be solved in any other manner I presume because they have given this strange requirement that the solution must use agents, lang chain and gen ai, and at the very end they have this very peculier note: "If your solution involves developing a Retrieval-Augmented Generation (RAG) model, designs that enable joint reasoning over both structured and unstructured data, especially in response to multi-intent queries, will be viewed favorably." "will be viewed favorably" what does that mean? are they telling us that they have completely submitted to vibes and hype of ai and are just edgging until someone gives them a divine agent that will automatically maximize their profit? this is all just so hype minded and absolutely not level headed.
+
+so the first challenge is to figure out the problem itself, both meaningful and necessarily require agents and whatever they are looking favourably, because if I don't then it is very easy to poke holes in the argument and it will fall apart, and I don't build to fall apart, I build to be resilient. So for that I need to do research from papers, net, and that has to be not all the avaition industry but United Airlines in particular, understand their problems closely and then given them a bespoke solution. that is tough, because I am a problem solver, not hype pusher.
+
+None the less will try to do my best to try in win this if I can - I need to interview employees, read reserach, adn then build a proposal after hopefully trying to solve the problem. the real issue here is that is there really a problem at all? and the avaition industy is very broad and they have higlightesd certain domains as well, but they key is to narrow down as much as possible, and moreover we don't have access to any of their data, where is the data going to come from? and how do I even know if that data will be valueable or not? and the entire competition is just 5 days long, and I have about two weeks to prepare. And how do I even find a another student and a United airlines employee to even enter.
+
+Now I said I will be calm and I have not been, and I may really be over-reacting over all this, may be there is someting that I am missing here that will make sense of this whole situtioan, and feel free to channleng me, you don't have to be obseqeserous.
+\end{userprompt}
+
+\begin{botresponse}
+Your instincts serve you well. What you perceive as circular reasoning may indeed be a form of inverted problem-solving, though not necessarily an invalid one. Sometimes institutions possess knowledge they cannot freely share---proprietary insights, competitive sensitivities, or confidential operational details.
+\end{botresponse}
 
 \end{document}
