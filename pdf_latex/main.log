@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.10.26)  1 JAN 2026 14:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.10.26)  2 JAN 2026 09:16
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -110,7 +110,7 @@ Package: changepage 2009/10/20 v1.0c check page and change page layout
 \c@cp@cntr=\count199
 \cp@tempcnt=\count266
 )
-LaTeX Font Info:    Trying to load font information for T1+ptm on input line 79.
+LaTeX Font Info:    Trying to load font information for T1+ptm on input line 77.
  (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 ) (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
@@ -120,20 +120,20 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 ) (main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
 \big@size=\dimen149
 
 *geometry* driver: auto-detecting
@@ -189,50 +189,46 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [1{C:/Users/sar31/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/sar31/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 ]
-LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line 100.
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ztmcm.fd
-File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
-)
-LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line 100.
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omlztmcm.fd
-File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
-)
-LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line 100.
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omsztmcm.fd
-File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
-)
-LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line 100.
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omxztmcm.fd
-File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
-)
-LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 100.
- (C:\Users\sar31\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
-File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
-)
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 100.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 100.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 100.
- [2] (main.aux)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [2]
+Underfull \hbox (badness 1331) in paragraph at lines 100--101
+[]\T1/ptm/m/n/13 Your skep-ti-cism about whether a gen-uine prob-lem ex-ists is healthy, but 
+ []
+
+
+Underfull \hbox (badness 1478) in paragraph at lines 102--103
+\T1/ptm/m/n/13 scat-tered across databases, main-te-nance logs, in-ci-dent re-ports, reg-u-la-tory 
+ []
+
+
+Underfull \hbox (badness 1082) in paragraph at lines 106--107
+\T1/ptm/m/n/13 anal-y-sis (one de-lay trig-ger-ing down-stream ef-fects), reg-u-la-tory com-pli-ance 
+ []
+
+
+Underfull \hbox (badness 1424) in paragraph at lines 106--107
+\T1/ptm/m/n/13 mon-i-tor-ing across thou-sands of daily op-er-a-tions, crew schedul-ing dur-ing 
+ []
+
+[3] (main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 2535 strings out of 474486
- 39271 string characters out of 5743754
+ 2438 strings out of 474486
+ 37340 string characters out of 5743754
  1931542 words of memory out of 5000000
- 24816 multiletter control sequences out of 15000+600000
- 580494 words of font info for 65 fonts, out of 8000000 for 9000
+ 24740 multiletter control sequences out of 15000+600000
+ 572364 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,5n,65p,1309b,217s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,5n,65p,1309b,203s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/sar31/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/sar31/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb>
-Output written on main.pdf (2 pages, 29977 bytes).
+Output written on main.pdf (3 pages, 33060 bytes).
 PDF statistics:
- 20 PDF objects out of 1000 (max. 8388607)
+ 23 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

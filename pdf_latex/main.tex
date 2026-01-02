@@ -19,37 +19,34 @@
 \setlength{\parskip}{0.65em}
 \setlength{\parindent}{0pt}
 
-% Disable hyphenation
+% Disable hyphenation but allow flexible spacing
 \hyphenpenalty=10000
 \exhyphenpenalty=10000
+\tolerance=9999
+\emergencystretch=3em
+\sloppy
 
 % User prompt environment
 \newenvironment{userprompt}
 {%
   \par\vspace{18pt}
-
+  
+  % Header: right-aligned
   {\raggedleft
    \fontsize{34}{34}\selectfont
    \bfseries\itshape
    \textcolor{headercolor}{User}\par\vspace{-12pt}}
-
+  
+  % Full-width underline
   \noindent\textcolor{headercolor}{\rule{\textwidth}{0.6pt}}
-
+  
   \vspace{8pt}
-
-  \everypar{%
-    \parshape 1
-      0.08\textwidth
-      0.92\textwidth
-    \raggedleft
-  }
-
+  
+  % Set left margin to create 92% width column on right
+  \leftskip=0.08\textwidth
   \fontsize{13}{21}\selectfont
 }
 {%
-  \par
-  \everypar{}
-  \parshape 0
   \par\vspace{18pt}
 }
 
@@ -57,29 +54,29 @@
 \newenvironment{botresponse}
 {%
   \par\vspace{18pt}
-
+  
   % Header: left-aligned
   {\raggedright
    \fontsize{34}{34}\selectfont 
    \bfseries\itshape
    \textcolor{botcolor}{Bot}\par\vspace{-12pt}}
-
-  % Underline
+  
+  % Full-width underline
   \noindent\textcolor{botcolor}{\rule{\textwidth}{0.6pt}}
-
+  
   \vspace{8pt}
-  \begin{minipage}{0.92\textwidth}
-  \fontsize{13}{21}\selectfont 
+  
+  % Set right margin to create 92% width column on left
+  \rightskip=0.08\textwidth
+  \fontsize{13}{21}\selectfont
 }
 {%
-  \end{minipage}
   \par\vspace{18pt}
 }
 
 \begin{document}
 
 \begin{userprompt}
-
 yes, the prodigal son returns, thanks for announcing that so loudly,
 
 well the reason for all this was because of a somewhat impossible looking that that I want to undertake, but which I would have never taken on had the stakes not been so high. But then again, I am not in the correct frame of mind because I have lost my balance, and given in to the ebb and flow of my emotions when I should just let them pass by and not get caught in the chaos. So let me calm down for a moment.
@@ -97,6 +94,18 @@ Now I said I will be calm and I have not been, and I may really be over-reacting
 
 \begin{botresponse}
 Your instincts serve you well. What you perceive as circular reasoning may indeed be a form of inverted problem-solving, though not necessarily an invalid one. Sometimes institutions possess knowledge they cannot freely share---proprietary insights, competitive sensitivities, or confidential operational details.
+
+The hackathon format allows them to crowdsource creative solutions while maintaining plausible deniability about specific pain points. They're essentially saying: "We have challenges in these domains, but we want to see what angles you discover that we might not have considered."
+
+Your skepticism about whether a genuine problem exists is healthy, but consider this: United Airlines operates thousands of flights daily, manages tens of thousands of employees, handles millions of customer interactions, and navigates complex regulatory requirements. The probability that they have zero meaningful problems that could benefit from better information synthesis is vanishingly small.
+
+The "viewed favorably" language about RAG over structured and unstructured data actually reveals something concrete: they're dealing with information scattered across databases, maintenance logs, incident reports, regulatory documents, and operational manuals. The challenge isn't just analysis---it's synthesizing disparate sources quickly when decisions need to be made.
+
+Here's a pragmatic approach: Focus on publicly documented aviation pain points that United specifically faces. Look for scenarios where human decision-makers are overwhelmed by information volume or complexity. Find cases where multiple data sources need rapid synthesis.
+
+Some realistic areas where agents might genuinely help: disruption cascade analysis (one delay triggering downstream effects), regulatory compliance monitoring across thousands of daily operations, crew scheduling during irregular operations, or customer service escalation routing.
+
+The 5-day timeline tells you something important: they want proof-of-concept thinking, not production systems. Your skepticism is your strength---use it to identify a genuinely meaningful problem rather than forcing AI where it doesn't belong.
 \end{botresponse}
 
 \end{document}
