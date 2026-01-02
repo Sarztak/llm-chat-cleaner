@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1767366984.50453 "c:/Users/sar31/Documents/GitHub/llm_chat_clearner/pdf_latex/main.tex" "main.pdf" "main" 1767366985.18205 0
+["pdflatex"] 1767367620.1237 "c:/Users/sar31/Documents/GitHub/llm_chat_clearner/pdf_latex/main.tex" "main.pdf" "main" 1767367620.88483 0
   "C:/Users/sar31/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1767296453 277165 dee86fc014f7ff3213d16637268d6b1e ""
   "C:/Users/sar31/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1761493457 24225047 2f380592e304cd60d1ff2a3577f52a07 ""
   "C:/Users/sar31/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc" 1458473887 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -33,9 +33,9 @@
   "C:/Users/sar31/AppData/Local/Programs/MiKTeX/tex/latex/psnfss/mathptmx.sty" 1585926771 4760 6e41de2b7a83dfa5d2c4b0a2fe01f046 ""
   "C:/Users/sar31/AppData/Local/Programs/MiKTeX/tex/latex/psnfss/t1ptm.fd" 1585253778 817 61d7da1e9f9e74989b196d147e623736 ""
   "C:/Users/sar31/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1700127522 55487 80a65caedd3722f4c20a14a69e785d8f ""
-  "c:/Users/sar31/Documents/GitHub/llm_chat_clearner/pdf_latex/main.tex" 1767366983 7558 f64857ef310ebbd841695d95df9200e6 ""
-  "main.aux" 1767366985 32 ab05033ccbb38b00a31b200ccedf8001 "pdflatex"
-  "main.tex" 1767366983 7558 f64857ef310ebbd841695d95df9200e6 ""
+  "c:/Users/sar31/Documents/GitHub/llm_chat_clearner/pdf_latex/main.tex" 1767367619 7425 4a9d12d980280107f3ea02b6a6a34f20 ""
+  "main.aux" 1767367620 32 ab05033ccbb38b00a31b200ccedf8001 "pdflatex"
+  "main.tex" 1767367619 7425 4a9d12d980280107f3ea02b6a6a34f20 ""
   (generated)
   "main.aux"
   "main.log"
