@@ -1,3 +1,15 @@
 .python-version
 .venv/
 main.py
+MarkdownTEX/
+
+# .tex file build intermediate files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pdf 
+*.synctex.gz 
+*.toc
+
