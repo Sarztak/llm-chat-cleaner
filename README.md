@@ -7,4 +7,3 @@ Current TODO
 1. How do I now convert from html or markdown to latex pdf?
 2. is latext approach correct when I need to convert 100s of chats
 3. How do I correct the spellings and put paragraphs programatically?
-

@@ -12,4 +12,12 @@ MarkdownTEX/
 *.pdf 
 *.synctex.gz 
 *.toc
+*.pdf
+*.md
+mkd_ast
+.json
+.python-version
+pdf_latex/
+.venv/
+.tex
 
