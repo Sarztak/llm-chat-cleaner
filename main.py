@@ -41,6 +41,10 @@ def _list(list_items):
 def walk2(node):
 
     # if the type == 'text' then return the text in raw
+    if node.get('type') == 'block_code':
+        node_copy = {k:v for k, v in node.items() if k != 'children'}
+        formatted_raw = apply_ops(node_copy, node['raw'])
+        return formatted_raw
     if set(node.keys()) == set(['type', 'raw']) and node['type'] == 'text':
         return node['raw']
 
@@ -79,7 +83,7 @@ def apply_ops(ops, text):
     if 'type' in ops.keys():
         match ops['type']:
             case "strong":
-                tex = f"\\textbr{{{text}}}" 
+                tex = f"\\textbf{{{text}}}" 
             case "emphasis":
                 tex = f"\\textit{{{text}}}" 
             case "block_text":
@@ -93,6 +97,8 @@ def apply_ops(ops, text):
                         tex = f"\\begin{{itemize}}\n{text}\end{{itemize}}\n"
                     elif list_type == '.':
                         tex = f"\\begin{{enumerate}}\n{text}\end{{enumerate}}\n"
+            case "block_code":
+                tex = f"\\begin{{verbatim}}\n{text}\end{{verbatim}}\n"
             case "paragraph":
                 tex = f"{text}\n"
             case "thematic_break":
