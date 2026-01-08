@@ -20,4 +20,5 @@ mkd_ast
 pdf_latex/
 .venv/
 .tex
-
+conversation.html
+formatted.tex
