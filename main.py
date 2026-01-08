@@ -46,16 +46,27 @@ def walk2(node):
 
     elif 'children' in node.keys():
         tex = ""
-        for c in node.get('children'):
-            # I would need a formatted string here so that I can pass it up the tree
-            # so a formatted string which is raw which is unformatted
-            formatted_raw = walk2(c) # empty dictionary is for collection operation
+        if 'type' in node.keys() and node['type'] == 'list':
+            list_items = ""
+            for c in node.get('children'):
+                formatted_raw = walk2(c)
+                list_items = list_items + formatted_raw
             node_copy = {k:v for k, v in node.items() if k != 'children'}
-            _tex = apply_ops(node_copy, formatted_raw)
+            _tex = apply_ops(node_copy, list_items)
             tex = tex + _tex 
+            return tex
 
-        # finally return the constructed string back
-        return tex
+        else:
+            for c in node.get('children'):
+                # I would need a formatted string here so that I can pass it up the tree
+                # so a formatted string which is raw which is unformatted
+                formatted_raw = walk2(c) # empty dictionary is for collection operation
+                node_copy = {k:v for k, v in node.items() if k != 'children'}
+                _tex = apply_ops(node_copy, formatted_raw)
+                tex = tex + _tex 
+
+            # finally return the constructed string back
+            return tex
     else:
         return ""
 
