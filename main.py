@@ -104,6 +104,11 @@ def apply_ops(ops, text):
                         tex = f"\\begin{{enumerate}}\n{text}\end{{enumerate}}\n"
             case "block_code":
                 tex = f"\\begin{{verbatim}}\n{text}\end{{verbatim}}\n"
+            case "link": 
+                if 'attrs' in ops.keys():
+                    attrs_dict = ops['attrs']
+                    url = attrs_dict.get('url', '')
+                    tex = f"\\href{{{url}}}{{{text}}}\n" 
             case "paragraph":
                 tex = f"{text}\n"
             case "thematic_break":
