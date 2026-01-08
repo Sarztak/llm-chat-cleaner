@@ -1,6 +1,5 @@
 .python-version
 .venv/
-main.py
 MarkdownTEX/
 
 # .tex file build intermediate files
