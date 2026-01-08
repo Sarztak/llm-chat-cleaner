@@ -3,6 +3,7 @@ from pathlib import Path
 from html_to_markdown import convert
 import mistune
 from collections import Counter
+import re 
 
 def open_html(file_path):
     with open(file_path, 'r', encoding='utf-8') as r:
@@ -38,15 +39,19 @@ def _list(list_items):
                 if c.get('type') == 'block_text':
                     pass
 
-def walk2(node):
+def escape_latex_text(s):
+    pattern = re.compile(r'([\\{}$&$%_])')
+    return pattern.sub(r'\\\1', s)
 
+def walk2(node):
     # if the type == 'text' then return the text in raw
     if node.get('type') == 'block_code':
         node_copy = {k:v for k, v in node.items() if k != 'children'}
         formatted_raw = apply_ops(node_copy, node['raw'])
         return formatted_raw
     if set(node.keys()) == set(['type', 'raw']) and node['type'] == 'text':
-        return node['raw']
+        escaped_raw = escape_latex_text(node['raw'])
+        return escaped_raw
 
     elif 'children' in node.keys():
         tex = ""
