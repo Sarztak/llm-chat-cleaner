@@ -21,3 +21,5 @@ pdf_latex/
 .tex
 conversation.html
 formatted.tex
+claude_stripped_down_chat.html
+*.html

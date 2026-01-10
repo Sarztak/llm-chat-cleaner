@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-"""
-Convert HTML conversation format to LaTeX conversation format
-"""
-
 from bs4 import BeautifulSoup
 import re
 
