@@ -87,6 +87,9 @@ def process_div_children(div):
         else:
             div_text = process_div_children(child)
             text_block.append(div_text)
+    
+    # remove empty string from the text block
+    text_block = [t for t in text_block if t.strip()]
 
     return "\n".join(text_block)
 
@@ -105,7 +108,6 @@ def main():
         # elif div.get('class', "").startswith('font-claude-message'):
         #     div_text = process_div_children(div)
         #     messages.append(div_text) 
-
     latex = "\n\n".join(messages)
 
     with open('parse_chat_latex.tex', 'w', encoding='utf-8') as w:
