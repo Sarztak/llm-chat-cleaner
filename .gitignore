@@ -16,9 +16,10 @@ MarkdownTEX/
 mkd_ast
 .json
 .python-version
-pdf_latex/
 .venv/
-.tex
+conversation.tex
+conversation1.tex
+parse_chat_latex.tex
 conversation.html
 formatted.tex
 claude_stripped_down_chat.html

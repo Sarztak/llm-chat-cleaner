@@ -78,8 +78,9 @@ def process_div_children(div):
             text_block.append(ol_block)
         elif child.name == 'code': 
             text = clean_ele_text(child, escape=False) 
-            latex = f"\\texttt{{{text}}}"
-            text_block.append(latex)
+            text_block.append(f"\\begin{{lstlisting}}")
+            text_block.append(text)
+            text_block.append(f"\\end{{lstlisting}}")
         else:
             div_text = process_div_children(child)
             text_block.append(div_text)

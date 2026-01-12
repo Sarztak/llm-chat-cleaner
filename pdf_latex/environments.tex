@@ -1,0 +1,52 @@
+% environments.tex
+% Custom environment definitions for conversations
+
+% User prompt environment
+\newenvironment{userprompt}
+{%
+  \par\vspace{18pt}
+  
+  % Header: right-aligned
+  {\raggedleft
+   \fontsize{34}{34}\selectfont
+   \bfseries\itshape
+   \textcolor{headercolor}{User}\par\vspace{-12pt}}
+  
+  % Full-width underline
+  \noindent\textcolor{headercolor}{\rule{\textwidth}{0.6pt}}
+  
+  \vspace{8pt}
+  
+  % Use adjustwidth to constrain everything including lists
+  \begin{adjustwidth}{0.08\textwidth}{0pt}
+  \fontsize{13}{21}\selectfont
+}
+{%
+  \end{adjustwidth}
+  \par\vspace{18pt}
+}
+
+% Bot response environment
+\newenvironment{botresponse}
+{%
+  \par\vspace{18pt}
+  
+  % Header: left-aligned
+  {\raggedright
+   \fontsize{34}{34}\selectfont 
+   \bfseries\itshape
+   \textcolor{botcolor}{Bot}\par\vspace{-12pt}}
+  
+  % Full-width underline
+  \noindent\textcolor{botcolor}{\rule{\textwidth}{0.6pt}}
+  
+  \vspace{8pt}
+  
+  % Use adjustwidth to constrain everything including lists
+  \begin{adjustwidth}{0pt}{0.08\textwidth}
+  \fontsize{13}{21}\selectfont
+}
+{%
+  \end{adjustwidth}
+  \par\vspace{18pt}
+}
