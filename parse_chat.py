@@ -48,28 +48,24 @@ def process_element(element):
 
 def process_list(element, ordered=False):
     _type = "enumerate" if ordered else "itemize"
-    li_list = [f"\begin{{{_type}}}"]
+    li_list = [f"\\begin{{{_type}}}"]
     if isinstance(element, NavigableString):
         return element.string
     for li in element.children:
         # process each li element
         text = process_element(li)  
-        item_text = f"\item {text}" 
+        item_text = f"\\item {text}" 
         li_list.append(item_text) 
     # append begin itemize end itemize
-    li_list.append(f"\end{{{_type}}}")
+    li_list.append(f"\\end{{{_type}}}")
     li_block = "\n".join(li_list)
     return li_block
 
 def process_div_children(div):
-    # breakpoint()
     text_block = []
     if isinstance(div, NavigableString):
         return div.string
     for child in div.children:
-        if child.name == 'div':
-            div_text = process_div_children(child)
-            text_block.append(div_text)
         if child.name == 'p':
             p_text = process_element(child) 
             text_block.append(p_text)
@@ -81,14 +77,12 @@ def process_div_children(div):
             ol_block = process_list(child, ordered=True)
             text_block.append(ol_block)
         elif child.name == 'code': 
-            breakpoint()
             text = clean_ele_text(child, escape=False) 
             latex = f"\\texttt{{{text}}}"
             text_block.append(latex)
-            pass
         else:
-            plain_text = clean_ele_text(child) 
-            text_block.append(plain_text)
+            div_text = process_div_children(child)
+            text_block.append(div_text)
 
     return "\n".join(text_block)
 
@@ -97,13 +91,19 @@ def main():
         html_parser = BeautifulSoup(fp, 'html.parser',multi_valued_attributes=None)
     
     divs = html_parser.find_all('div')
-    user_messages = []
+    messages = []
     for div in divs:
         if div.get('data-testid', "") == 'user-message':
             div_text = process_div_children(div)
+            messages.append(div_text) 
         elif div.get('class', "").startswith('font-claude-message'):
             div_text = process_div_children(div)
-            pass
+            messages.append(div_text) 
 
+    latex = "\n".join(messages)
+
+    with open('parse_chat_latex.tex', 'w', encoding='utf-8') as w:
+        for line in latex:
+            w.write(line)
 if __name__ == "__main__":
     main()
