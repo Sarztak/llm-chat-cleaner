@@ -41,11 +41,12 @@ def process_element(element):
             text = clean_ele_text(ele)
             latex = f"\\href{{{href}}}{{{text}}}"
         else:
-            latex = clean_ele_text(ele).strip()
+            latex = clean_ele_text(ele)
+        latex = latex.strip()  
         if latex: # append only non empty string
             result.append(latex)
 
-    return "\n".join(result)
+    return " ".join(result)
 
 def process_list(element, ordered=False):
     _type = "enumerate" if ordered else "itemize"
@@ -90,20 +91,22 @@ def process_div_children(div):
     return "\n".join(text_block)
 
 def main():
-    with open('claude_stripped_down_chat.html', 'r', encoding='utf8') as fp:
+    with open('conversation.html', 'r', encoding='utf8') as fp:
         html_parser = BeautifulSoup(fp, 'html.parser',multi_valued_attributes=None)
     
-    divs = html_parser.find_all('div')
+    divs = html_parser.find_all('div', recursive=False)
     messages = []
     for div in divs:
-        if div.get('data-testid', "") == 'user-message':
-            div_text = process_div_children(div)
-            messages.append(div_text) 
-        elif div.get('class', "").startswith('font-claude-message'):
-            div_text = process_div_children(div)
-            messages.append(div_text) 
+        div_text = process_div_children(div)
+        messages.append(div_text) 
+        # if div.get('data-testid', "") == 'user-message':
+        #     div_text = process_div_children(div)
+        #     messages.append(div_text) 
+        # elif div.get('class', "").startswith('font-claude-message'):
+        #     div_text = process_div_children(div)
+        #     messages.append(div_text) 
 
-    latex = "\n".join(messages)
+    latex = "\n\n".join(messages)
 
     with open('parse_chat_latex.tex', 'w', encoding='utf-8') as w:
         for line in latex:
