@@ -41,8 +41,9 @@ def process_element(element):
             text = clean_ele_text(ele)
             latex = f"\\href{{{href}}}{{{text}}}"
         else:
-            latex = clean_ele_text(ele)
-        result.append(latex)
+            latex = clean_ele_text(ele).strip()
+        if latex: # append only non empty string
+            result.append(latex)
 
     return "\n".join(result)
 
@@ -53,9 +54,10 @@ def process_list(element, ordered=False):
         return element.string
     for li in element.children:
         # process each li element
-        text = process_element(li)  
-        item_text = f"\\item {text}" 
-        li_list.append(item_text) 
+        if li.name == 'li':
+            text = process_element(li)  
+            item_text = f"\\item {text}" 
+            li_list.append(item_text) 
     # append begin itemize end itemize
     li_list.append(f"\\end{{{_type}}}")
     li_block = "\n".join(li_list)
@@ -78,7 +80,7 @@ def process_div_children(div):
             text_block.append(ol_block)
         elif child.name == 'code': 
             text = clean_ele_text(child, escape=False) 
-            text_block.append(f"\\begin{{lstlisting}}")
+            text_block.append(f"\\begin{{lstlisting}}\n")
             text_block.append(text)
             text_block.append(f"\\end{{lstlisting}}")
         else:
