@@ -51,9 +51,9 @@ for div in doc.xpath('//div[@data-testid="user-message"] | //div[starts-with(@cl
     html_content.append(html_role_appened)
 
 # Write to HTML file
-with open('conversation.html', 'w', encoding='utf8') as f:
+with open('conversation2.html', 'w', encoding='utf8') as f:
     f.write('\n'.join(html_content))
 
-# Write to json file
-with open('stripped.json', 'w', encoding='utf8') as f:
+# # Write to json file
+# with open('stripped.json', 'w', encoding='utf8') as f:
     json.dump(out, f, ensure_ascii=False, indent=2)

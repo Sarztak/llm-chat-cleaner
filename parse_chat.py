@@ -40,6 +40,9 @@ def process_element(element):
             href = ele.get('href', '')
             text = clean_ele_text(ele)
             latex = f"\\href{{{href}}}{{{text}}}"
+        elif ele.name == 'code':
+            inline_code = clean_ele_text(ele)
+            latex = f"\\texttt{{{inline_code}}}"
         else:
             latex = clean_ele_text(ele)
         latex = latex.strip()  
@@ -96,35 +99,36 @@ def process_div_children(div):
     return "\n".join(text_block)
 
 def main():
-    with open('conversation.html', 'r', encoding='utf8') as fp:
+    with open('hyperband.html', 'r', encoding='utf8') as fp:
         html_parser = BeautifulSoup(fp, 'html.parser',multi_valued_attributes=None)
     
-    divs = html_parser.find_all('div', recursive=False)
+    divs = html_parser.find_all('div')
     messages = []
     for div in divs:
-        strong_tag = div.find('strong')
-        if strong_tag.text == 'user:':
-            messages.append(f"\\begin{{userprompt}}")
-            strong_tag.string.replace_with("")
-            div_text = process_div_children(div)
-            messages.append(div_text) 
-            messages.append(f"\\end{{userprompt}}")
-        elif strong_tag.text == 'assistant:':
-            messages.append(f"\\begin{{botresponse}}")
-            strong_tag.string.replace_with("")
-            div_text = process_div_children(div)
-            messages.append(div_text) 
-            messages.append(f"\\end{{botresponse}}")
-        # if div.get('data-testid', "") == 'user-message':
+        # strong_tag = div.find('strong')
+        # if strong_tag and strong_tag.text == 'user:':
+        #     messages.append(f"\\begin{{userprompt}}")
+        #     strong_tag.string.replace_with("")
         #     div_text = process_div_children(div)
         #     messages.append(div_text) 
-        # elif div.get('class', "").startswith('font-claude-message'):
+        #     messages.append(f"\\end{{userprompt}}")
+        # elif strong_tag and strong_tag.text == 'assistant:':
+        #     messages.append(f"\\begin{{botresponse}}")
+        #     strong_tag.string.replace_with("")
         #     div_text = process_div_children(div)
         #     messages.append(div_text) 
+        #     messages.append(f"\\end{{botresponse}}")
+        if div.get('data-testid', "") == 'user-message':
+            div_text = process_div_children(div)
+            messages.append(div_text) 
+        elif div.get('class', "").startswith('font-claude-response'):
+            div_text = process_div_children(div)
+            messages.append(div_text) 
     latex = "\n\n".join(messages)
 
     with open('parse_chat_latex.tex', 'w', encoding='utf-8') as w:
         for line in latex:
             w.write(line)
+
 if __name__ == "__main__":
     main()
