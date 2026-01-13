@@ -84,12 +84,14 @@ def process_div_children(div):
             text_block.append(f"\\begin{{lstlisting}}\n")
             text_block.append(text)
             text_block.append(f"\\end{{lstlisting}}")
+        elif child.name == 'br':
+            text_block.append(' ') # an extra line break will be added; but this is a fragile way to do it as it relies on \n being added at the very end. I need to find a better way
         else:
             div_text = process_div_children(child)
             text_block.append(div_text)
     
     # remove empty string from the text block
-    text_block = [t for t in text_block if t.strip()]
+    text_block = [t for t in text_block if t]
 
     return "\n".join(text_block)
 
@@ -100,8 +102,19 @@ def main():
     divs = html_parser.find_all('div', recursive=False)
     messages = []
     for div in divs:
-        div_text = process_div_children(div)
-        messages.append(div_text) 
+        strong_tag = div.find('strong')
+        if strong_tag.text == 'user:':
+            messages.append(f"\\begin{{userprompt}}")
+            strong_tag.string.replace_with("")
+            div_text = process_div_children(div)
+            messages.append(div_text) 
+            messages.append(f"\\end{{userprompt}}")
+        elif strong_tag.text == 'assistant:':
+            messages.append(f"\\begin{{botresponse}}")
+            strong_tag.string.replace_with("")
+            div_text = process_div_children(div)
+            messages.append(div_text) 
+            messages.append(f"\\end{{botresponse}}")
         # if div.get('data-testid', "") == 'user-message':
         #     div_text = process_div_children(div)
         #     messages.append(div_text) 
