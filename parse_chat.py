@@ -1,6 +1,8 @@
 from rich.traceback import install; install()
 from bs4 import BeautifulSoup, NavigableString
 import re 
+from convert_math import *
+
 
 def escape_latex_text(s):
     pattern = re.compile(r'([\\{}$&$%_])')
@@ -84,9 +86,14 @@ def process_div_children(div):
             text_block.append(ol_block)
         elif child.name == 'code': 
             text = clean_ele_text(child, escape=False) 
-            text_block.append(f"\\begin{{lstlisting}}\n")
-            text_block.append(text)
-            text_block.append(f"\\end{{lstlisting}}")
+            if is_math_expression(text):
+                # convert to inline math
+                math_latex = convert_math_to_latex(text)
+                text_block.append(f"${math_latex}$")
+            else:
+                text_block.append(f"\\begin{{lstlisting}}\n")
+                text_block.append(text)
+                text_block.append(f"\\end{{lstlisting}}")
         elif child.name == 'br':
             text_block.append(' ') # an extra line break will be added; but this is a fragile way to do it as it relies on \n being added at the very end. I need to find a better way
         else:
@@ -125,8 +132,8 @@ def main():
             div_text = process_div_children(div)
             messages.append(div_text) 
     latex = "\n\n".join(messages)
-
-    with open('parse_chat_latex.tex', 'w', encoding='utf-8') as w:
+    
+    with open('parse_chat_latex.tex', 'w', encoding='utf8') as w:
         for line in latex:
             w.write(line)
 
