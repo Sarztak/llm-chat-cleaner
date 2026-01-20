@@ -165,7 +165,6 @@ if __name__ == '__main__':
         input_file = sys.argv[1]
         with open(input_file, 'r', encoding='utf-8') as f:
             html_content = f.read()
-        
         # Generate output filename
         if len(sys.argv) > 2:
             output_file = sys.argv[2]

@@ -25,7 +25,7 @@ for tag in doc.xpath('//svg | //img | //button | //style | //script'):
 
 # 3. collect the cleaned assistant blocks
 out, html_content = [], []
-for div in doc.xpath('//div[@data-testid="user-message"] | //div[starts-with(@class,"font-claude-message")]'):
+for div in doc.xpath('//div[@data-testid="user-message"] | //div[starts-with(@class,"font-claude-response")]'):
     role = 'user' if div.get('data-testid') else 'assistant'
 
     # strip ALL attributes except href on <a>

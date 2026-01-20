@@ -5,16 +5,18 @@ from convert_math import *
 
 
 def escape_latex_text(s):
-    pattern = re.compile(r'([\\{}$&$%_])')
+    pattern = re.compile(r'([\\{}$&$%_#])')
     return pattern.sub(r'\\\1', s)
 
 def clean_text(text):
-    lines = text.split('\n')
+    return text
+    lines = text.split('\n') # separate the lines
     cleaned_lines = []
-    pattern = r'[ \t]+'
+    pattern = r'[ \t]+' # remove extra tabs or white spaces
     for line in lines:
         line = re.sub(pattern, ' ', line)
-        cleaned_lines.append(line)
+        if line.strip(): # filter out empty lines
+            cleaned_lines.append(line)
     return "\n".join(cleaned_lines)
 
 def clean_ele_text(ele, escape=True):
@@ -76,7 +78,7 @@ def process_div_children(div):
     for child in div.children:
         if child.name == 'p':
             p_text = process_element(child) 
-            text_block.append(p_text)
+            text_block.append(p_text) 
         elif child.name == 'ul':
             # get all the immediate children which are li elements
             ul_block = process_list(child, ordered=False)
@@ -126,9 +128,13 @@ def main():
         #     messages.append(div_text) 
         #     messages.append(f"\\end{{botresponse}}")
         if div.get('data-testid', "") == 'user-message':
+            # text_block = div.get_text()
+            # messages.append(f"\\begin{{lstlisting}}\n")
+            # messages.append(text_block)
+            # messages.append(f"\\end{{lstlisting}}")
             div_text = process_div_children(div)
             messages.append(div_text) 
-        elif div.get('class', "").startswith('font-claude-response'):
+        elif div.get('class', "").startswith('font-claude-response'): # the font-claude-response can change, earlier it ws font-claude-message
             div_text = process_div_children(div)
             messages.append(div_text) 
     latex = "\n\n".join(messages)
