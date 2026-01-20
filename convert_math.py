@@ -4,7 +4,7 @@ def is_math_expression(text):
     """Detect if code text contains mathematical notation"""
     math_indicators = ['≈', '×', '÷', '≤', '≥', '∈', '∉', '∑', '∏', '∫', 
                        '√', '±', '≠', '∞', '∂', 'α', 'β', 'γ', 'δ', 'ε',
-                       'θ', 'λ', 'μ', 'π', 'σ', 'φ', 'ω', '^', '_']
+                       'θ', 'λ', 'μ', 'π', 'σ', 'φ', 'ω', '^']
     return any(indicator in text for indicator in math_indicators)
 
 def convert_math_to_latex(text):

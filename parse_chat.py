@@ -88,6 +88,8 @@ def process_div_children(div):
             text_block.append(ol_block)
         elif child.name == 'code': 
             text = clean_ele_text(child, escape=False) 
+            if 'tuner_hb' in text:
+                breakpoint()
             if is_math_expression(text):
                 # convert to inline math
                 math_latex = convert_math_to_latex(text)
