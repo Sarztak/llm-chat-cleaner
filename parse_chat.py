@@ -9,15 +9,15 @@ def escape_latex_text(s):
     return pattern.sub(r'\\\1', s)
 
 def clean_text(text):
-    return text
     lines = text.split('\n') # separate the lines
     cleaned_lines = []
     pattern = r'[ \t]+' # remove extra tabs or white spaces
     for line in lines:
         line = re.sub(pattern, ' ', line)
-        if line.strip(): # filter out empty lines
+        line = line.strip() # remove extra space in the beginning or end
+        if line: # filter out empty lines
             cleaned_lines.append(line)
-    return "\n".join(cleaned_lines)
+    return "\n\n".join(cleaned_lines)
 
 def clean_ele_text(ele, escape=True):
     if isinstance(ele, str):
