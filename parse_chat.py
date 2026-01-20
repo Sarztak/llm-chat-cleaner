@@ -99,13 +99,12 @@ def process_div_children(div):
         elif child.name == 'br':
             text_block.append(' ') # an extra line break will be added; but this is a fragile way to do it as it relies on \n being added at the very end. I need to find a better way
         else:
-            div_text = process_div_children(child)
+            div_text = process_div_children(child).strip() # I don't need the extra lines added between blocks due to recursion 
             text_block.append(div_text)
     
     # remove empty string from the text block
     text_block = [t for t in text_block if t]
-
-    return "\n".join(text_block)
+    return "\n\n".join(text_block) # I need one blank line between the children of the same div
 
 def main():
     with open('hyperband.html', 'r', encoding='utf8') as fp:
@@ -137,7 +136,7 @@ def main():
         elif div.get('class', "").startswith('font-claude-response'): # the font-claude-response can change, earlier it ws font-claude-message
             div_text = process_div_children(div)
             messages.append(div_text) 
-    latex = "\n\n".join(messages)
+    latex = "\n\n".join(messages) # I need one blank line between the div elements in the latex format
     
     with open('parse_chat_latex.tex', 'w', encoding='utf8') as w:
         for line in latex:
