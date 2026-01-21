@@ -88,14 +88,12 @@ def process_div_children(div):
             text_block.append(ol_block)
         elif child.name == 'code': 
             text = clean_ele_text(child, escape=False) 
-            if 'tuner_hb' in text:
-                breakpoint()
             if is_math_expression(text):
                 # convert to inline math
                 math_latex = convert_math_to_latex(text)
                 text_block.append(f"${math_latex}$")
             else:
-                text_block.append(f"\\begin{{lstlisting}}\n")
+                text_block.append(f"\\begin{{lstlisting}}[breaklines=true, breakatwhitespace=false]\n")
                 text_block.append(text)
                 text_block.append(f"\\end{{lstlisting}}")
         elif child.name == 'br':
@@ -134,10 +132,14 @@ def main():
             # messages.append(text_block)
             # messages.append(f"\\end{{lstlisting}}")
             div_text = process_div_children(div)
-            messages.append(div_text) 
+            messages.append(
+                f"\\begin{{userprompt}}\n{div_text}\n\\end{{userprompt}}"
+            )
         elif div.get('class', "").startswith('font-claude-response'): # the font-claude-response can change, earlier it ws font-claude-message
             div_text = process_div_children(div)
-            messages.append(div_text) 
+            messages.append(
+                f"\\begin{{botresponse}}\n{div_text}\n\\end{{botresponse}}"
+            )
     latex = "\n\n".join(messages) # I need one blank line between the div elements in the latex format
     
     with open('parse_chat_latex.tex', 'w', encoding='utf8') as w:
