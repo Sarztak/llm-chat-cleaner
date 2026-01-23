@@ -10,8 +10,9 @@
 \usepackage{changepage}
 \usepackage{enumitem}  % For list customization
 \usepackage{hyperref}
-\usepackage{listings}[breaklines=True] % to handle code blocks
-\usepackage{seqsplit}
+\usepackage{listings} % to handle code blocks
+\usepackage{seqsplit} % to break lines with special characters
+\usepackage{needspace}
 
 % Declare extra math symbols
 \DeclareUnicodeCharacter{2248}{\approx}
@@ -22,10 +23,6 @@
 \definecolor{botcolor}{RGB}{200,80,80}
 
 \definecolor{linkcolor}{RGB}{0,102,204}      % Deep blue (default web link color)
-% \definecolor{linkcolor}{RGB}{41,128,185}   % Darker ocean blue
-% \definecolor{linkcolor}{RGB}{22,160,133}   % Teal/darker turquoise
-% \definecolor{linkcolor}{RGB}{52,73,94}     % Dark slate blue
-% \definecolor{linkcolor}{RGB}{142,68,173}   % Purple
 
 % Hyperref settings
 \hypersetup{
