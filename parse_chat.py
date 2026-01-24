@@ -107,30 +107,13 @@ def process_div_children(div):
     return "\n\n".join(text_block) # I need one blank line between the children of the same div
 
 def main():
-    with open('hyperband.html', 'r', encoding='utf8') as fp:
+    with open('sevis.html', 'r', encoding='utf8') as fp:
         html_parser = BeautifulSoup(fp, 'html.parser',multi_valued_attributes=None)
     
     divs = html_parser.find_all('div')
     messages = []
     for div in divs:
-        # strong_tag = div.find('strong')
-        # if strong_tag and strong_tag.text == 'user:':
-        #     messages.append(f"\\begin{{userprompt}}")
-        #     strong_tag.string.replace_with("")
-        #     div_text = process_div_children(div)
-        #     messages.append(div_text) 
-        #     messages.append(f"\\end{{userprompt}}")
-        # elif strong_tag and strong_tag.text == 'assistant:':
-        #     messages.append(f"\\begin{{botresponse}}")
-        #     strong_tag.string.replace_with("")
-        #     div_text = process_div_children(div)
-        #     messages.append(div_text) 
-        #     messages.append(f"\\end{{botresponse}}")
         if div.get('data-testid', "") == 'user-message':
-            # text_block = div.get_text()
-            # messages.append(f"\\begin{{lstlisting}}\n")
-            # messages.append(text_block)
-            # messages.append(f"\\end{{lstlisting}}")
             div_text = process_div_children(div)
             messages.append(
                 f"\\begin{{userprompt}}\n{div_text}\n\\end{{userprompt}}"
@@ -142,7 +125,7 @@ def main():
             )
     latex = "\n\n".join(messages) # I need one blank line between the div elements in the latex format
     
-    with open('parse_chat_latex.tex', 'w', encoding='utf8') as w:
+    with open('sevis_chat.tex', 'w', encoding='utf8') as w:
         for line in latex:
             w.write(line)
 
