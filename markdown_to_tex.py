@@ -1,15 +1,20 @@
 import re
 from collections import deque
 import markdown
+
 # open the file first
 user_pattern = 'User prompt'
 bot_pattern = 'GPT-4o mini'
 pattern = rf'{user_pattern}|{bot_pattern}'
 paragraphs = dict(user=[], bot=[])
 
+# would splitting by capture group be a better idea ? 
+def capture_code_blocks(text):
+    pattern = r"""^`{3}(.*?)`{3}$"""
+    matches = re.findall(pattern, text, re.MULTILINE|re.DOTALL)
 
 def capture_ordered_list(text):
-    pattern = r"""^(\d+)\.\s(.*)"""
+    pattern = r"""^(\d+\.\s.*(?:\n*\d+\.\s.*)*)"""
     matches = re.findall(pattern, text, re.MULTILINE)
     queue = deque(matches)
     lists = []
@@ -30,7 +35,7 @@ def capture_ordered_list(text):
     # lists should now contain all the ordered lists
 
 def capture_unordered_list(text):
-    pattern = r"""^-\s(.*)"""
+    pattern = r"""^(-\s.*(?:\n*-\s.*)*)*"""
     matches = re.findall(pattern, text, re.MULTILINE)
 
     # now this is going to be trickly because there is no delimiter
