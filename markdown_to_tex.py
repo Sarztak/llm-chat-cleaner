@@ -1,12 +1,5 @@
 import re
 from collections import deque
-import markdown
-
-# open the file first
-user_pattern = 'User prompt'
-bot_pattern = 'GPT-4o mini'
-pattern = rf'{user_pattern}|{bot_pattern}'
-paragraphs = dict(user=[], bot=[])
 
 # would splitting by capture group be a better idea ? 
 def capture_code_blocks(text):
@@ -38,8 +31,6 @@ def capture_unordered_list(text):
     pattern = r"""^(-\s.*(?:\n*-\s.*)*)*"""
     matches = re.findall(pattern, text, re.MULTILINE)
 
-    # now this is going to be trickly because there is no delimiter
-
 def collect_line(fp, role):
     para = []
     while True:
@@ -53,23 +44,22 @@ def collect_line(fp, role):
         para.append(current_line) # current line if not user/bot then store
 
 
-with open('assorted 1.md', 'r', encoding='utf8') as fp:
-    while True:
-        line = fp.readline() # this will move the pointer to the next line
-        if not line:
-            break
-        # start or stop
-        match = re.search(pattern, line) # I expect file to start with user
-        if match:
-            if match.group() == user_pattern:
-                collect_line(fp, 'user')
-            elif match.group() == bot_pattern:
-                collect_line(fp, 'bot')
-
 if __name__ == "__main__":
+    # open the file first
+    user_pattern = 'User prompt'
+    bot_pattern = 'GPT-4o mini'
+    pattern = rf'{user_pattern}|{bot_pattern}'
+    paragraphs = dict(user=[], bot=[])
+
     with open('assorted 1.md', 'r', encoding='utf8') as fp:
-        lines = fp.readlines()
-    markdown_text = "".join(lines)
-    html = markdown.markdown(markdown_text, extensions=['fenced_code'])
-    with open('assorted_1.html', 'w', encoding='utf8') as wp:
-        wp.write(html)
+        while True:
+            line = fp.readline() # this will move the pointer to the next line
+            if not line:
+                break
+            # start or stop
+            match = re.search(pattern, line) # I expect file to start with user
+            if match:
+                if match.group() == user_pattern:
+                    collect_line(fp, 'user')
+                elif match.group() == bot_pattern:
+                    collect_line(fp, 'bot')
