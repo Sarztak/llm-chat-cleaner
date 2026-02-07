@@ -100,7 +100,6 @@ if __name__ == "__main__":
             processed_block = f"\\begin{{botresponse}}\n{tex}\n\\end{{botresponse}}"
         
         processed_blocks.append(processed_block)
-    breakpoint()
 
     # with open('md_to_html_op.txt', 'w', encoding='utf8') as w:
     #     for line in ol_elements:
