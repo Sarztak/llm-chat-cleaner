@@ -162,6 +162,12 @@ def main():
     # print(counter)
 
 if __name__ == "__main__":
-    main()
-    # mkd_parser = mistune.create_markdown(renderer='ast')
+    # main()
+    with open('assorted 1.md', 'r', encoding='utf-8') as r:
+        html = r.readlines()
+        html = "\n".join(html)
+    # html = mistune.html(md)
+    with open('assorted 1.html', 'w') as w:
+        w.write(html)
+    # mkd_parser = mistune_parser.create_markdown(renderer=None)
     # mkd_ast = mkd_parser("**_sarthak_**")

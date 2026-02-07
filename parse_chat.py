@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup, NavigableString
 import re 
 from convert_math import *
 
-
 def escape_latex_text(s):
     pattern = re.compile(r'([\\{}$&$%_#])')
     return pattern.sub(r'\\\1', s)
