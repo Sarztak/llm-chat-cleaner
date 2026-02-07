@@ -65,10 +65,6 @@
 -----------------------------------------
 
 1. **Create a New Project**:
-   - Go to `File` > `New Project`.
-   - Select `New Directory`.
-   - Choose `R Package`.
-   - Name your package (e.g., `MyPackage`) and select a directory to save it.
 
 2. **Set Up Package Structure**: RStudio will create a basic package structure for you, including:
 

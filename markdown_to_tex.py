@@ -63,3 +63,5 @@ if __name__ == "__main__":
                     collect_line(fp, 'user')
                 elif match.group() == bot_pattern:
                     collect_line(fp, 'bot')
+
+    breakpoint()
