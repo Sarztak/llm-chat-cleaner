@@ -2,14 +2,60 @@ import markdown
 import re
 from parse_chat import clean_ele_text
 
-def process_element(text):
+def process_inline_text(text):
+
+    # first process all the  bold text
+    # all text is inline so I am not using [\s\S] because that will capture newlines as well
+    bold_pattern = re.compile(r"""(\*\*([^*]+)\*\*)""")
+
+    # this is a tricky one because I need to distinguish between bold and italic. there a negative look ahead and look behind (?<!) (?!) assertion is needed to ensure that bold and italic are not confused.
+    italic_pattern = re.compile(r"""(?<!\*)(\*(?!\*)([^*]+)\*)""")
+    
+    # highlight pattern; same as pattern for italic
+    inline_code_pattern = re.compile(r"""(?<!`)(`(?!`)([^`]+)`)""")
+
+    # href or url link pattern
+    url_pattern = re.compile(r"""\[(.*?)\]\((.*?)\)""") 
+
+    # now this will be repeated 3 times over one for each pattern
+
+    def _sub_pattern_to_tex(pattern, _type, text):
+
+        def _tex(_type, text):
+            match _type:
+                case "bold":
+                    replacement_text = f"\\textbf{{{text}}}"
+                case "italic":
+                    replacement_text = f"\\textit{{{text}}}"
+                case "inline_code":
+                    replacement_text = f"\\texttt{{{text}}}"
+                case _:
+                    replacement_text = text
+            return replacement_text
+
+        matches = re.findall(pattern, text)
+
+        for match in matches:
+            if len(match) == 2:
+                replacement_pattern = re.escape(match[0])
+                replacement_text = _tex(_type, match[1])
+                text = re.sub(replacement_pattern, replacement_text, text)
+
+        return text
+
+    text = _sub_pattern_to_tex(bold_pattern, "bold", text)
+    text = _sub_pattern_to_tex(italic_pattern, "italic", text)
+    text = _sub_pattern_to_tex(inline_code_pattern, "inline_code", text)
+
+    # still need to process href and links
     return text
+
 
 def process_list(items, ordered=False):
     _type = "enumerate" if ordered else "itemize"
     li_list = [f"\\begin{{{_type}}}"]
     for item in items:
-        text = process_element(item)  
+        text = process_inline_text(item)  
         item_text = f"\\item {text}" 
         li_list.append(item_text) 
     li_list.append(f"\\end{{{_type}}}")
