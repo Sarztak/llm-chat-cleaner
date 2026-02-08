@@ -1,4 +1,3 @@
-import markdown
 import re
 from parse_chat import clean_ele_text
 
@@ -15,9 +14,13 @@ def process_inline_text(text):
     inline_code_pattern = re.compile(r"""(?<!`)(`(?!`)([^`]+)`)""")
 
     # href or url link pattern
-    url_pattern = re.compile(r"""\[(.*?)\]\((.*?)\)""") 
+    url_pattern = re.compile(r"""(\[(.*?)\]\((.*?)\))""") 
 
-    # now this will be repeated 3 times over one for each pattern
+    # heading pattern 
+    heading_pattern = re.compile(r"""(^(#+)\s+(.*)$)""", re.M) 
+
+    # inline math pattern
+    math_pattern = re.compile(r"""((\${1,2}).+(\2))""", re.M)
 
     def _sub_pattern_to_tex(pattern, _type, text):
 
@@ -35,19 +38,45 @@ def process_inline_text(text):
 
         matches = re.findall(pattern, text)
 
+        def _get_heading_level(n_hash):
+            n_hash = int(n_hash) # n_hash will be captured as string
+
+            match n_hash:
+                case 1:
+                    heading_level = f"\\section"
+                case 2:
+                    heading_level = f"\\subsection"
+                case _ if n_hash >= 3:
+                    heading_level = f"\\subsubsection"
+                case _:
+                    heading_level = ""
+            return heading_level
+            
         for match in matches:
             if len(match) == 2:
                 replacement_pattern = re.escape(match[0])
                 replacement_text = _tex(_type, match[1])
                 text = re.sub(replacement_pattern, replacement_text, text)
-
+            elif len(match) == 3:
+                if _type == "href":
+                    replacement_pattern = re.escape(match[0])
+                    href, text = match[1], match[2]
+                    replacement_text = f"\\href{{{href}}}{{{text}}}"
+                    text = re.sub(replacement_pattern, replacement_text)
+                elif _type == "heading":
+                    replacement_pattern = re.escape(match[0])
+                    n_hash, text = match[1], match[2]
+                    heading_level = _get_heading_level(n_hash)
+                    replacement_text = f"{heading_level}{{{text}}}"
+                    text = re.sub(replacement_pattern, replacement_text)
         return text
 
+    text = _sub_pattern_to_tex(bold_pattern, "href", text)
     text = _sub_pattern_to_tex(bold_pattern, "bold", text)
     text = _sub_pattern_to_tex(italic_pattern, "italic", text)
     text = _sub_pattern_to_tex(inline_code_pattern, "inline_code", text)
+    text = _sub_pattern_to_tex(bold_pattern, "heading", text)
 
-    # still need to process href and links
     return text
 
 
