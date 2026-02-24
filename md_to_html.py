@@ -93,19 +93,22 @@ def _sub_pattern_to_tex(pattern, _type, text):
         if len(match) == 2:
 
             replacement_pattern = re.escape(match[0])
-            replacement_text = _tex(_type, match[1])
+            inner_text = escape_latex_text(match[1])
+            replacement_text = _tex(_type, inner_text)
             text = re.sub(replacement_pattern, replacement_text, text)
         elif len(match) == 3:
             if _type == "href":
                 replacement_pattern = re.escape(match[0])
-                url_part, text_part = match[1], match[2]
-                replacement_text = rf"\\href{{{url_part}}}{{{text_part}}}"
+                url_part, inner_text = match[1], match[2]
+                replacement_text = escape_latex_text(inner_text)
+                replacement_text = rf"\\href{{{url_part}}}{{{replacement_text}}}"
                 text = re.sub(replacement_pattern, replacement_text, text)
             elif _type == "heading":
                 replacement_pattern = re.escape(match[0])
-                hashes, text_part = match[1], match[2]
+                hashes, inner_text = match[1], match[2]
+                replacement_text = escape_latex_text(inner_text)
                 heading_level = _get_heading_level(hashes)
-                replacement_text = rf"{heading_level}{{{text_part}}}"
+                replacement_text = rf"{heading_level}{{{replacement_text}}}"
                 text = re.sub(replacement_pattern, replacement_text, text)
     return text
 
@@ -155,14 +158,13 @@ def process_inline_text(text):
             elif m.group("math"):
                 processed_text += extract_inner("math", m.group("math"))
         else:
-            processed_text += split
+            processed_text += escape_latex_text(split)
 
     # text = _sub_pattern_to_tex(heading_pattern, "heading", text)
     # text = _sub_pattern_to_tex(url_pattern, "href", text)
     # text = _sub_pattern_to_tex(inline_code_pattern, "inline_code", text)
     # text = _sub_pattern_to_tex(bold_pattern, "bold", text)
     # text = _sub_pattern_to_tex(italic_pattern, "italic", text)
-    #
     return processed_text
 
 
@@ -261,19 +263,19 @@ if __name__ == "__main__":
                     items = re.findall(item_pattern, split)
                     if items:
                         text = process_list(items, ordered=True)
-
-                text = clean_text(split)
-                """
-                 we are at a fork which to apply first processing inline or escape because process_inline_text will add backslash that escape_latex will try to escape and I cannot use escape_latex first because that will mess up href if present and have characters that need not be escaped. Solution is to not add escape what has already been escaped and then not to escape anything in the url portion of the href  
-                """
-                text = process_inline_text(text)
-                text = escape_latex_text(text)
+                else:
+                    text = clean_text(split)
+                    """
+                    we are at a fork which to apply first processing inline or escape because process_inline_text will add backslash that escape_latex will try to escape and I cannot use escape_latex first because that will mess up href if present and have characters that need not be escaped. Solution is to not add escape what has already been escaped and then not to escape anything in the url portion of the href  
+                    """
+                    text = process_inline_text(text)
+                    # text = escape_latex_text(text)
 
             if text:  # append if not empty
                 tex_elements.append(text)
 
+        
         tex = "\n".join(tex_elements)
-
         if i % 2 == 0:  # even response are users
             tex = "\n\n".join(
                 tex.split("\n")
