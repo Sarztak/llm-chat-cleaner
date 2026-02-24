@@ -41,7 +41,6 @@ def process_inline_text(text):
     def _sub_pattern_to_tex(pattern, _type, text):
 
         def _tex(_type, text):
-            text = escape_latex_text(text)
             match _type:
                 case "bold":
                     replacement_text = rf"\\textbf{{{text}}}" # the replacement text needs to be a raw string because re.sub does its own escape processing on top of python's
@@ -55,16 +54,16 @@ def process_inline_text(text):
 
         matches = re.findall(pattern, text)
 
-        def _get_heading_level(n_hash):
-            n_hash = int(n_hash) # n_hash will be captured as string
+        def _get_heading_level(hashes):
+            n_hash = len(re.findall('#', hashes))
 
             match n_hash:
                 case 1:
-                    heading_level = f"\\section"
+                    heading_level = rf"\\section"
                 case 2:
-                    heading_level = f"\\subsection"
+                    heading_level = rf"\\subsection"
                 case _ if n_hash >= 3:
-                    heading_level = f"\\subsubsection"
+                    heading_level = rf"\\subsubsection"
                 case _:
                     heading_level = ""
             return heading_level
@@ -77,22 +76,22 @@ def process_inline_text(text):
             elif len(match) == 3:
                 if _type == "href":
                     replacement_pattern = re.escape(match[0])
-                    href, text = match[1], match[2]
-                    replacement_text = rf"\\href{{{href}}}{{{text}}}"
-                    text = re.sub(replacement_pattern, replacement_text)
+                    url_part, text_part = match[1], match[2]
+                    replacement_text = rf"\\href{{{url_part}}}{{{text_part}}}"
+                    text = re.sub(replacement_pattern, replacement_text, text)
                 elif _type == "heading":
                     replacement_pattern = re.escape(match[0])
-                    n_hash, text = match[1], match[2]
-                    heading_level = _get_heading_level(n_hash)
-                    replacement_text = rf"{heading_level}{{{text}}}"
-                    text = re.sub(replacement_pattern, replacement_text)
+                    hashes, text_part = match[1], match[2]
+                    heading_level = _get_heading_level(hashes)
+                    replacement_text = rf"{heading_level}{{{text_part}}}"
+                    text = re.sub(replacement_pattern, replacement_text, text)
         return text
 
-    text = _sub_pattern_to_tex(bold_pattern, "href", text)
+    text = _sub_pattern_to_tex(heading_pattern, "heading", text)
+    text = _sub_pattern_to_tex(url_pattern, "href", text)
+    text = _sub_pattern_to_tex(inline_code_pattern, "inline_code", text)
     text = _sub_pattern_to_tex(bold_pattern, "bold", text)
     text = _sub_pattern_to_tex(italic_pattern, "italic", text)
-    text = _sub_pattern_to_tex(inline_code_pattern, "inline_code", text)
-    text = _sub_pattern_to_tex(bold_pattern, "heading", text)
 
     return text
 
@@ -183,7 +182,7 @@ if __name__ == "__main__":
                     text = process_list(items, ordered=True)
             else:
                 text = clean_text(split)
-                text = escape_latex_text(text)
+                text = process_inline_text(text)
 
             if text: # append if not empty
                 tex_elements.append(text)
@@ -191,7 +190,8 @@ if __name__ == "__main__":
         tex = "\n".join(tex_elements)
 
         if i % 2 == 0: # even response are users
-            processed_block = f"\\begin{{userprompt}}\n\n{text}\n\n\\end{{userprompt}}"
+            tex = '\n\n'.join(tex.split('\n')) # this is a very bad fix to the overflow problem that is caused in tex
+            processed_block = f"\\begin{{userprompt}}\n\n{tex}\n\n\\end{{userprompt}}"
         else:
             processed_block = f"\\begin{{botresponse}}\n\n{tex}\n\n\\end{{botresponse}}"
         
