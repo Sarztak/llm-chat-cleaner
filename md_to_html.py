@@ -1,8 +1,26 @@
 import re
 
 def escape_latex_text(s):
-    pattern = re.compile(r'([\\{}$&$%_#])')
-    return pattern.sub(r'\\\1', s)
+    def escape_non_href(text):
+        pattern = re.compile(r'(\\[\\{}$&%_#]|\\[a-zA-Z]+)|([{}$&%_#])')
+        def replacer(m):
+            if m.group(1):
+                return m.group(1)
+            else:
+                return '\\' + m.group(2)
+        return pattern.sub(replacer, text)
+    
+    href_pattern = re.compile(r'(\\href\{[^}]*\})(\{[^}]*\})')
+    result = ''
+    last_end = 0
+    for m in href_pattern.finditer(s):
+        result += escape_non_href(s[last_end:m.start()])
+        url_part = m.group(1)
+        display_inner = m.group(2)[1:-1]
+        result += url_part + '{' + escape_non_href(display_inner) + '}'
+        last_end = m.end()
+    result += escape_non_href(s[last_end:])
+    return result
 
 def clean_text(text):
     lines = text.split('\n') # separate the lines
@@ -165,24 +183,31 @@ if __name__ == "__main__":
             text = ""
             # then detect code ol or ul block to process
             # at a time only one is true that is the assumption
-            if re.search(ul_pattern, split):
-                item_pattern = re.compile(r"""^(?:-\s*(.*)\n*)""", re.M)
-                items = re.findall(item_pattern, split)
-                if items:
-                    text = process_list(items, ordered=False)
-            elif re.search(code_pattern, split):
+
+            # code pattern and code blocks are special because they don't need any processing
+            if re.search(code_pattern, split):
                 code_block = re.findall(code_pattern, split)[0]
                 code_text = code_block
                 text = clean_text(code_text)
                 text = f"\\begin{{lstlisting}}[breaklines=true, breakatwhitespace=false]\n\n{text}\n\n\\end{{lstlisting}}"
-            elif re.search(ol_pattern, split):
-                item_pattern = re.compile(r"""^(?:\d+\.\s*(.*)\n*)""", re.M)
-                items = re.findall(item_pattern, split)
-                if items:
-                    text = process_list(items, ordered=True)
             else:
+                if re.search(ul_pattern, split):
+                    item_pattern = re.compile(r"""^(?:-\s*(.*)\n*)""", re.M)
+                    items = re.findall(item_pattern, split)
+                    if items:
+                        text = process_list(items, ordered=False)
+                elif re.search(ol_pattern, split):
+                    item_pattern = re.compile(r"""^(?:\d+\.\s*(.*)\n*)""", re.M)
+                    items = re.findall(item_pattern, split)
+                    if items:
+                        text = process_list(items, ordered=True)
+
                 text = clean_text(split)
+                """
+                 we are at a fork which to apply first processing inline or escape because process_inline_text will add backslash that escape_latex will try to escape and I cannot use escape_latex first because that will mess up href if present and have characters that need not be escaped. Solution is to not add escape what has already been escaped and then not to escape anything in the url portion of the href  
+                """
                 text = process_inline_text(text)
+                text = escape_latex_text(text)
 
             if text: # append if not empty
                 tex_elements.append(text)
