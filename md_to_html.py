@@ -1,5 +1,21 @@
 import re
-from parse_chat import clean_ele_text
+
+def escape_latex_text(s):
+    pattern = re.compile(r'([\\{}$&$%_#])')
+    return pattern.sub(r'\\\1', s)
+
+def clean_text(text):
+    lines = text.split('\n') # separate the lines
+    cleaned_lines = []
+    pattern = r'[ \t]+' # remove extra tabs or white spaces
+    for line in lines:
+        if line.startswith('---'):# remove line breaks in markdown
+            continue
+        line = re.sub(pattern, ' ', line)
+        line = line.strip() # remove extra space in the beginning or end
+        if line: # filter out empty lines
+            cleaned_lines.append(line)
+    return "\n".join(cleaned_lines) # I am joining by just one \n
 
 def process_inline_text(text):
 
@@ -25,13 +41,14 @@ def process_inline_text(text):
     def _sub_pattern_to_tex(pattern, _type, text):
 
         def _tex(_type, text):
+            text = escape_latex_text(text)
             match _type:
                 case "bold":
-                    replacement_text = f"\\textbf{{{text}}}"
+                    replacement_text = rf"\\textbf{{{text}}}" # the replacement text needs to be a raw string because re.sub does its own escape processing on top of python's
                 case "italic":
-                    replacement_text = f"\\textit{{{text}}}"
+                    replacement_text = rf"\\textit{{{text}}}"
                 case "inline_code":
-                    replacement_text = f"\\texttt{{{text}}}"
+                    replacement_text = rf"\\texttt{{{text}}}"
                 case _:
                     replacement_text = text
             return replacement_text
@@ -61,13 +78,13 @@ def process_inline_text(text):
                 if _type == "href":
                     replacement_pattern = re.escape(match[0])
                     href, text = match[1], match[2]
-                    replacement_text = f"\\href{{{href}}}{{{text}}}"
+                    replacement_text = rf"\\href{{{href}}}{{{text}}}"
                     text = re.sub(replacement_pattern, replacement_text)
                 elif _type == "heading":
                     replacement_pattern = re.escape(match[0])
                     n_hash, text = match[1], match[2]
                     heading_level = _get_heading_level(n_hash)
-                    replacement_text = f"{heading_level}{{{text}}}"
+                    replacement_text = rf"{heading_level}{{{text}}}"
                     text = re.sub(replacement_pattern, replacement_text)
         return text
 
@@ -131,11 +148,12 @@ if __name__ == "__main__":
     ol_pattern = re.compile(r"""^(\d+\.\s.*(?:\n*\d+\.\s.*)*)""", re.M)
     ul_pattern = re.compile(r"""^(-\s.*(?:\n*-\s.*)*)""", re.M)
 
-    combined_pattern = re.compile(r"""^\s*```([\s\S]*?)```$|^(\d+\.\s.*(?:\n*\d+\.\s.*)*)|^(-\s.*(?:\n*-\s.*)*)""", re.M)
+    # the combined pattern split into paragraph, ordered, and unordered lists 
+    # and code block and then we detect individual blocks using appropriate regex
+    combined_pattern = re.compile(r"""^\s*(```[\s\S]*?```)$|^(\d+\.\s.*(?:\n*\d+\.\s.*)*)|^(-\s.*(?:\n*-\s.*)*)""", re.M)
 
     blocks = re.split(user_block, markdown_text)
     blocks = [block.strip() for block in blocks if block and block.strip()]
-
     # the first block is always the user block and the last block is always the llm response that is true in most cases and this will be assumed
     # so everything even numbered is user and odd numbered is llm response
     processed_blocks = []
@@ -154,15 +172,18 @@ if __name__ == "__main__":
                 if items:
                     text = process_list(items, ordered=False)
             elif re.search(code_pattern, split):
-                inline_code = clean_ele_text(split, escape=False)
-                text = f"\\texttt{{{inline_code}}}"
+                code_block = re.findall(code_pattern, split)[0]
+                code_text = code_block
+                text = clean_text(code_text)
+                text = f"\\begin{{lstlisting}}[breaklines=true, breakatwhitespace=false]\n\n{text}\n\n\\end{{lstlisting}}"
             elif re.search(ol_pattern, split):
                 item_pattern = re.compile(r"""^(?:\d+\.\s*(.*)\n*)""", re.M)
                 items = re.findall(item_pattern, split)
                 if items:
                     text = process_list(items, ordered=True)
             else:
-                text = clean_ele_text(split)
+                text = clean_text(split)
+                text = escape_latex_text(text)
 
             if text: # append if not empty
                 tex_elements.append(text)
@@ -170,11 +191,17 @@ if __name__ == "__main__":
         tex = "\n".join(tex_elements)
 
         if i % 2 == 0: # even response are users
-            processed_block = f"\\begin{{userprompt}}\n{text}\n\\end{{userprompt}}"
+            processed_block = f"\\begin{{userprompt}}\n\n{text}\n\n\\end{{userprompt}}"
         else:
-            processed_block = f"\\begin{{botresponse}}\n{tex}\n\\end{{botresponse}}"
+            processed_block = f"\\begin{{botresponse}}\n\n{tex}\n\n\\end{{botresponse}}"
         
         processed_blocks.append(processed_block)
+
+    latex = "\n\n".join(processed_blocks) # I need one blank line between the div elements in the latex format
+    
+    with open('assorted.tex', 'w', encoding='utf8') as w:
+        for line in latex:
+            w.write(line)
 
     # with open('md_to_html_op.txt', 'w', encoding='utf8') as w:
     #     for line in ol_elements:

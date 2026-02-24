@@ -16,7 +16,7 @@ def clean_text(text):
         line = line.strip() # remove extra space in the beginning or end
         if line: # filter out empty lines
             cleaned_lines.append(line)
-    return "\n\n".join(cleaned_lines)
+    return "\n".join(cleaned_lines) # I am joining by just one \n
 
 def clean_ele_text(ele, escape=True):
     if isinstance(ele, str):
