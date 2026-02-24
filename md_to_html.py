@@ -1,26 +1,9 @@
 import re
 
+
 def escape_latex_text(s):
-    def escape_non_href(text):
-        pattern = re.compile(r'(\\[\\{}$&%_#]|\\[a-zA-Z]+)|([{}$&%_#])')
-        def replacer(m):
-            if m.group(1):
-                return m.group(1)
-            else:
-                return '\\' + m.group(2)
-        return pattern.sub(replacer, text)
-    
-    href_pattern = re.compile(r'(\\href\{[^}]*\})(\{[^}]*\})')
-    result = ''
-    last_end = 0
-    for m in href_pattern.finditer(s):
-        result += escape_non_href(s[last_end:m.start()])
-        url_part = m.group(1)
-        display_inner = m.group(2)[1:-1]
-        result += url_part + '{' + escape_non_href(display_inner) + '}'
-        last_end = m.end()
-    result += escape_non_href(s[last_end:])
-    return result
+    pattern = re.compile(r'([\\{}$&$%_#])')
+    return pattern.sub(r'\\\1', s)
 
 def clean_text(text):
     lines = text.split('\n') # separate the lines
@@ -35,26 +18,86 @@ def clean_text(text):
             cleaned_lines.append(line)
     return "\n".join(cleaned_lines) # I am joining by just one \n
 
+def extract_inner(group_name: str, text: str) -> dict:
+    bold_inner    = re.compile(r"""\*\*([^*]+)\*\*""", re.M)
+    italic_inner  = re.compile(r"""\*([^*]+)\*""", re.M)
+    code_inner    = re.compile(r"""`([^`]+)`""", re.M)
+    url_inner     = re.compile(r"""\[(.*?)\]\((.*?)\)""", re.M)
+    heading_inner = re.compile(r"""^(#+)\s+(.*)$""", re.M)
+    math_inner    = re.compile(r"""(\${1,2})(.+)\1""", re.M)
+
+    match group_name:
+        case 'bold':
+            inner = bold_inner.search(text)
+            if inner:
+                return {'text': inner.group(1)}
+        case 'italic':
+            inner = italic_inner.search(text)
+            if inner:
+                return {'text': inner.group(1)}
+        case 'code':
+            inner = code_inner.search(text)
+            if inner:
+                return {'text': inner.group(1)}
+        case 'url':
+            inner = url_inner.search(text)
+            if inner:
+                return {'label': inner.group(1), 'href': inner.group(2)}
+        case 'heading':
+            inner = heading_inner.search(text)
+            if inner:
+                return {'level': len(inner.group(1)), 'text': inner.group(2)}
+        case 'math':
+            inner = math_inner.search(text)
+            if inner:
+                return {'text': inner.group(2)}
+    return {'text': text}
+
 def process_inline_text(text):
 
-    # first process all the  bold text
+    # first process all the bold text
     # all text is inline so I am not using [\s\S] because that will capture newlines as well
-    bold_pattern = re.compile(r"""(\*\*([^*]+)\*\*)""")
-
+    bold_pattern    = r"""(?P<bold>\*\*[^*]+\*\*)"""
     # this is a tricky one because I need to distinguish between bold and italic. there a negative look ahead and look behind (?<!) (?!) assertion is needed to ensure that bold and italic are not confused.
-    italic_pattern = re.compile(r"""(?<!\*)(\*(?!\*)([^*]+)\*)""")
+    italic_pattern  = r"""(?<!\*)(?P<italic>\*(?!\*)[^*]+\*)"""
     
     # highlight pattern; same as pattern for italic
-    inline_code_pattern = re.compile(r"""(?<!`)(`(?!`)([^`]+)`)""")
+    inline_code_pattern = r"""(?<!`)(?P<code>`(?!`)[^`]+`)"""
 
     # href or url link pattern
-    url_pattern = re.compile(r"""(\[(.*?)\]\((.*?)\))""") 
+    url_pattern     = r"""(?P<url>\[.*?\]\(.*?\))"""
 
-    # heading pattern 
-    heading_pattern = re.compile(r"""(^(#+)\s+(.*)$)""", re.M) 
+    # heading pattern
+    heading_pattern = r"""(?P<heading>^#+\s+.*$)"""
 
     # inline math pattern
-    math_pattern = re.compile(r"""((\${1,2}).+(\2))""", re.M)
+    math_pattern    = r"""(?P<math>(?P<math_delim>\${1,2}).+(?P=math_delim))"""
+    
+    combined_pattern = re.compile(
+        rf"{bold_pattern}|{italic_pattern}|{inline_code_pattern}|{url_pattern}|{heading_pattern}|{math_pattern}",
+        re.MULTILINE
+    )
+
+    splits = re.split(combined_pattern, text)
+    splits = [split.strip() for split in splits if split and split.strip()]
+    for split in splits:
+        m = re.search(combined_pattern, split)
+        breakpoint()
+        if m:
+            if m.group('bold'):
+                print(extract_inner('bold', m.group('bold')))
+            elif m.group('italic'):
+                print(extract_inner('italic', m.group('italic')))
+            elif m.group('code'):
+                print(extract_inner('code', m.group('code')))
+            elif m.group('url'):
+                print(extract_inner('url', m.group('url')))
+            elif m.group('heading'):
+                print(extract_inner('heading', m.group('heading')))
+            elif m.group('math'):
+                print(extract_inner('math', m.group('math')))
+        else:
+            print("text", split)
 
     def _sub_pattern_to_tex(pattern, _type, text):
 
@@ -77,17 +120,18 @@ def process_inline_text(text):
 
             match n_hash:
                 case 1:
-                    heading_level = rf"\\section"
+                    heading_level = r"\\section"
                 case 2:
-                    heading_level = rf"\\subsection"
+                    heading_level = r"\\subsection"
                 case _ if n_hash >= 3:
-                    heading_level = rf"\\subsubsection"
+                    heading_level = r"\\subsubsection"
                 case _:
                     heading_level = ""
             return heading_level
             
         for match in matches:
             if len(match) == 2:
+            
                 replacement_pattern = re.escape(match[0])
                 replacement_text = _tex(_type, match[1])
                 text = re.sub(replacement_pattern, replacement_text, text)
