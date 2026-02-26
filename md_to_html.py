@@ -1,9 +1,14 @@
 import re
+from typing import Iterator, Tuple
 
 
 def escape_latex_text(s):
     pattern = re.compile(r"([\\{}$&$%_#])")
     return pattern.sub(r"\\\1", s)
+
+
+def is_plain_text(s):
+    return bool(re.fullmatch(r"[a-zA-Z0-9\\{}$&%_#\s]+", s))
 
 
 def clean_text(text):
@@ -33,6 +38,7 @@ def extract_inner(group_name: str, text: str) -> str:
         case "bold":
             inner = bold_inner.search(text)
             if inner:
+                replacement_text = rf"\\textbf{{{text}}}"  # the replacement text needs to be a raw string because re.sub does its own escape processing on top of python's
                 processed_text = _sub_pattern_to_tex(bold_inner, "bold", text)
         case "italic":
             inner = italic_inner.search(text)
@@ -75,23 +81,8 @@ def _sub_pattern_to_tex(pattern, _type, text):
 
     matches = re.findall(pattern, text)
 
-    def _get_heading_level(hashes):
-        n_hash = len(re.findall("#", hashes))
-
-        match n_hash:
-            case 1:
-                heading_level = r"\\section"
-            case 2:
-                heading_level = r"\\subsection"
-            case _ if n_hash >= 3:
-                heading_level = r"\\subsubsection"
-            case _:
-                heading_level = ""
-        return heading_level
-
     for match in matches:
         if len(match) == 2:
-
             replacement_pattern = re.escape(match[0])
             inner_text = escape_latex_text(match[1])
             replacement_text = _tex(_type, inner_text)
@@ -113,7 +104,25 @@ def _sub_pattern_to_tex(pattern, _type, text):
     return text
 
 
-def process_inline_text(text):
+"""
+def process_inline_text(processed_text_list, text):
+    if text == processed_text_list[-1]:
+        return text
+    # the idea is that if the text is just text and has nothing to process then the same thing is returned
+    # if that is the case then we have reached the root and no more processing needs to be done
+    # otherwise we call the process_inline_text on whatever was detected (each split)
+
+"""
+
+
+def process_inline_text(text: str, processed_so_far: list) -> str:
+    """
+    This is supposed to returned text in latex format and does so recursively.
+    When there is just one word that can be rendered in latex without modification then
+    that is the base case
+    """
+    if text == processed_so_far[-1]:
+        return text
 
     # first process all the bold text
     # all text is inline so I am not using [\s\S] because that will capture newlines as well
@@ -140,8 +149,8 @@ def process_inline_text(text):
 
     splits = re.split(combined_pattern, text)
     splits = [split.strip() for split in splits if split and split.strip()]
-
     processed_text = ""
+
     for split in splits:
         m = re.search(combined_pattern, split)
         if m:
@@ -160,19 +169,14 @@ def process_inline_text(text):
         else:
             processed_text += escape_latex_text(split)
 
-    # text = _sub_pattern_to_tex(heading_pattern, "heading", text)
-    # text = _sub_pattern_to_tex(url_pattern, "href", text)
-    # text = _sub_pattern_to_tex(inline_code_pattern, "inline_code", text)
-    # text = _sub_pattern_to_tex(bold_pattern, "bold", text)
-    # text = _sub_pattern_to_tex(italic_pattern, "italic", text)
-    return processed_text
+    return processed_text, text
 
 
-def process_list(items, ordered=False):
+def list_to_tex(items, ordered=False):
     _type = "enumerate" if ordered else "itemize"
     li_list = [f"\\begin{{{_type}}}"]
     for item in items:
-        text = process_inline_text(item)
+        text = process_inline_text(item, [])
         item_text = f"\\item {text}"
         li_list.append(item_text)
     li_list.append(f"\\end{{{_type}}}")
@@ -180,101 +184,102 @@ def process_list(items, ordered=False):
     return li_block
 
 
-def capture_ol_pattern_with_inbetween(markdown_text):
-    test_ol_pattern = re.compile(r"""^(\d+)\.\s(.*)""", re.M)
-    ol_elements = []
-    prev_match1 = -1
-    prev_match2 = ""
-    running_text = ""
-    for m in test_ol_pattern.finditer(markdown_text):
-        curr_match1 = m.group(1)
-        curr_match2 = m.group(2)
+def iterate_user_bot_response(chat_text: str) -> Iterator[str]:
+    block_split_pattern = re.compile(
+        r"""^(?:User prompt .*)\n([\s\S]*?)\n\n^(?:GPT-4o mini:)""", re.M
+    )
 
-        if int(curr_match1) == 1 and running_text:
-            # start of a new capture group
-            # store the previous one
-            ol_elements.append(running_text)
-            running_text = f"{curr_match1}. {curr_match2}"
-        elif int(prev_match1) + 1 == int(curr_match1):
-            # expand the text and update the match
-            regex_pattern = rf"""{re.escape(prev_match1)}\.\s{re.escape(prev_match2)}([\s\S]*?){re.escape(curr_match1)}\.\s{re.escape(curr_match2)}"""
-            pattern = re.compile(regex_pattern, re.M)
-            match = pattern.search(markdown_text)
-            running_text = (
-                running_text + match.group(1) + f"{curr_match1}. {curr_match2}"
-            )
-        elif int(prev_match1) == -1:
-            running_text = f"{curr_match1}. {curr_match2}"  # for the first list we need to start with something
+    blocks = re.split(block_split_pattern, chat_text)
+    for block in blocks:
+        if block and block.strip():
+            yield block
 
-        prev_match1 = curr_match1
-        prev_match2 = curr_match2
 
-    return ol_elements
+def block_split_iterator(text_block: str) -> Iterator[Tuple[str, str]]:
+
+    code_pattern = re.compile(r"""^\s*(?P<code>```[\s\S]*?```)$""", re.M)
+    ol_pattern = re.compile(r"""^(?P<ol>\d+\.\s.*(?:\n*\d+\.\s.*)*)""", re.M)
+    ul_pattern = re.compile(r"""^(?P<ul>-\s.*(?:\n*-\s.*)*)""", re.M)
+    heading_pattern = re.compile(r"""(?P<heading>^#+\s+.*$)""", re.M)
+
+    combined_pattern = re.compile(
+        rf"""{code_pattern}|{ol_pattern}|{ul_pattern}|{heading_pattern}""",
+        re.M,
+    )
+
+    splits = re.split(combined_pattern, text_block)
+    for split in splits:
+        if split and split.strip():
+            m = re.search(combined_pattern, split)
+            for split_type in ["heading", "code", "ol", "ul"]:
+                if m and m.group(split_type):
+                    split_text = m.group(split_type)
+                    yield split_type, split_text
+            yield "paragraph", split
+
+
+def paragraph_to_tex(paragraph: str) -> str:
+    formatted_tex = process_inline_text(paragraph, [])
+    return formatted_tex
+
+
+def code_to_tex(code: str) -> str:
+    code = code.strip()
+    text = re.findall(r"""```(.+)```""", code)[0]
+    text = clean_text(text)
+    return f"\\begin{{lstlisting}}[breaklines=true, breakatwhitespace=false]\n\n{text}\n\n\\end{{lstlisting}}"
+
+
+def heading_to_tex(heading: str) -> str:
+    _, leading_hashes, text = re.split("^(#+)", heading)
+    text = text.strip()
+    n_hashes = len(leading_hashes)
+    match n_hashes:
+        case 1:
+            heading_level = r"\\section"
+        case 2:
+            heading_level = r"\\subsection"
+        case _ if n_hashes >= 3:
+            heading_level = r"\\subsubsection"
+        case _:
+            heading_level = ""
+    formatted_text = paragraph_to_tex(text)
+
+    return rf"{heading_level}{{{formatted_text}}}"
 
 
 if __name__ == "__main__":
     with open("assorted 1.md", "r", encoding="utf8") as fp:
         lines = fp.readlines()
-    markdown_text = "".join(lines)
-    user_block = re.compile(
-        r"""^(?:User prompt .*)\n([\s\S]*?)\n\n^(?:GPT-4o mini:)""", re.M
-    )
-    bot_block = re.compile(r"""^(?:GPT-4o mini:)([\s\S]*?)\n(?:User prompt .*)""", re.M)
-    code_pattern = re.compile(r"""^\s*```([\s\S]*?)```$""", re.M)
-    ol_pattern = re.compile(r"""^(\d+\.\s.*(?:\n*\d+\.\s.*)*)""", re.M)
-    ul_pattern = re.compile(r"""^(-\s.*(?:\n*-\s.*)*)""", re.M)
+    chat_text = "".join(lines)
 
-    # the combined pattern split into paragraph, ordered, and unordered lists
-    # and code block and then we detect individual blocks using appropriate regex
-    combined_pattern = re.compile(
-        r"""^\s*(```[\s\S]*?```)$|^(\d+\.\s.*(?:\n*\d+\.\s.*)*)|^(-\s.*(?:\n*-\s.*)*)""",
-        re.M,
-    )
+    # the first block is always the user block and the last block is always the llm response that is true in most cases and this will be assumed so everything even numbered is user and odd numbered is llm response
 
-    blocks = re.split(user_block, markdown_text)
-    blocks = [block.strip() for block in blocks if block and block.strip()]
-    # the first block is always the user block and the last block is always the llm response that is true in most cases and this will be assumed
-    # so everything even numbered is user and odd numbered is llm response
     processed_blocks = []
-    for i, block in enumerate(blocks):
+    for i, block in enumerate(iterate_user_bot_response(chat_text=chat_text)):
         tex_elements = []
-        # split each block by code, ol or ul list first
-        splits = re.split(combined_pattern, block)
-        splits = [split.strip() for split in splits if split and split.strip()]
-        for split in splits:
+        for split_type, split_text in block_split_iterator(block):
             text = ""
+            if split_type == "heading":
+                text = heading_to_tex(split_text)
+            elif split_type == "code":
+                text = code_to_tex(split_text)
+            elif split_type == "ol":
+                text = list_to_tex(split_text, ordered=True)
+            elif split_type == "ul":
+                text = list_to_tex(split_text, ordered=False)
+            else:
+                text = paragraph_to_tex(split_text)
+
             # then detect code ol or ul block to process
             # at a time only one is true that is the assumption
-
             # code pattern and code blocks are special because they don't need any processing
-            if re.search(code_pattern, split):
-                code_block = re.findall(code_pattern, split)[0]
-                code_text = code_block
-                text = clean_text(code_text)
-                text = f"\\begin{{lstlisting}}[breaklines=true, breakatwhitespace=false]\n\n{text}\n\n\\end{{lstlisting}}"
-            else:
-                if re.search(ul_pattern, split):
-                    item_pattern = re.compile(r"""^(?:-\s*(.*)\n*)""", re.M)
-                    items = re.findall(item_pattern, split)
-                    if items:
-                        text = process_list(items, ordered=False)
-                elif re.search(ol_pattern, split):
-                    item_pattern = re.compile(r"""^(?:\d+\.\s*(.*)\n*)""", re.M)
-                    items = re.findall(item_pattern, split)
-                    if items:
-                        text = process_list(items, ordered=True)
-                else:
-                    text = clean_text(split)
-                    """
-                    we are at a fork which to apply first processing inline or escape because process_inline_text will add backslash that escape_latex will try to escape and I cannot use escape_latex first because that will mess up href if present and have characters that need not be escaped. Solution is to not add escape what has already been escaped and then not to escape anything in the url portion of the href  
-                    """
-                    text = process_inline_text(text)
-                    # text = escape_latex_text(text)
+            # the combined pattern split into paragraph, ordered, and unordered lists
+            # and code block and then we detect individual blocks using appropriate regex
 
             if text:  # append if not empty
                 tex_elements.append(text)
 
-        
         tex = "\n".join(tex_elements)
         if i % 2 == 0:  # even response are users
             tex = "\n\n".join(
@@ -293,11 +298,3 @@ if __name__ == "__main__":
     with open("assorted.tex", "w", encoding="utf8") as w:
         for line in latex:
             w.write(line)
-
-    # with open('md_to_html_op.txt', 'w', encoding='utf8') as w:
-    #     for line in ol_elements:
-    #         w.write(line + '\n\n-----------------------------------------\n\n')
-    # splits = re.split(code_pattern, markdown_text, flags=re.MULTILINE)
-    # html = markdown.markdown(markdown_text, extensions=['fenced_code'])
-    # with open('assorted_1.html', 'w', encoding='utf8') as wp:
-    #     wp.write(html)
