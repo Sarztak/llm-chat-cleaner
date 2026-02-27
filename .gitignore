@@ -17,12 +17,7 @@ mkd_ast
 .json
 .python-version
 .venv/
-conversation.tex
-conversation1.tex
-parse_chat_latex.tex
-conversation.html
-formatted.tex
-claude_stripped_down_chat.html
+*.tex
 *.html
 main.synctex(busy)
 __pycache__
