@@ -1,18 +1,12 @@
 import re
 from helper import process_inline_text
-from rich.traceback import install; install()
+from rich.traceback import install
+
+install()
 from typing import Iterator, Tuple
 
-def escape_latex_text(s):
-    pattern = re.compile(r"([\\{}$&$%_#])")
-    return pattern.sub(r"\\\1", s)
 
-
-def is_plain_text(s):
-    return bool(re.fullmatch(r"[a-zA-Z0-9\\{}$&%_#\s]+", s))
-
-
-def clean_text(text):
+def clean_text(text: str) -> str:
     lines = text.split("\n")  # separate the lines
     cleaned_lines = []
     pattern = r"[ \t]+"  # remove extra tabs or white spaces
@@ -26,11 +20,17 @@ def clean_text(text):
     return "\n".join(cleaned_lines)  # I am joining by just one \n
 
 
-def list_to_tex(items, ordered=False):
-    _type = "enumerate" if ordered else "itemize"
+def list_to_tex(text: str, ordered: bool = False) -> str:
+    if ordered:
+        item_pattern = re.compile(r"""^(?:\d+\.\s*(.*)\n*)""", re.M)
+        _type = "enumerate"
+    else:
+        item_pattern = re.compile(r"""^(?:-\s*(.*)\n*)""", re.M)
+        _type = "itemize"
+    items = re.findall(item_pattern, text)
     li_list = [f"\\begin{{{_type}}}"]
     for item in items:
-        text = process_inline_text(item, [])
+        text = process_inline_text(item)
         item_text = f"\\item {text}"
         li_list.append(item_text)
     li_list.append(f"\\end{{{_type}}}")
@@ -80,11 +80,11 @@ def paragraph_to_tex(paragraph: str) -> str:
     for split in splits:
         if split and split.strip():
             m = re.search(url_pattern, split)
-            if m and m.group('url'):
+            if m and m.group("url"):
                 _m = re.search(r"""(\[.*?\])(\(.*?\))""", split)
                 if _m:
-                    display_text = _m.group(0) # only display_text should be processed
-                    url = _m.group(1) # no processing on the url part
+                    display_text = _m.group(0)  # only display_text should be processed
+                    url = _m.group(1)  # no processing on the url part
                     processed_display_text = process_inline_text(display_text)
                     url_tex_format = rf"\\href{{{url}}}{{{processed_display_text}}}"
                     processed_splits.append(url_tex_format)
@@ -92,7 +92,7 @@ def paragraph_to_tex(paragraph: str) -> str:
                 paragraph_tex_format = process_inline_text(split)
                 processed_splits.append(paragraph_tex_format)
     splits_joined = "".join(processed_splits)
-    return formatted_tex
+    return splits_joined
 
 
 def code_to_tex(code: str) -> str:
@@ -120,10 +120,7 @@ def heading_to_tex(heading: str) -> str:
     return rf"{heading_level}{{{formatted_text}}}"
 
 
-if __name__ == "__main__":
-    with open("assorted 1.md", "r", encoding="utf8") as fp:
-        lines = fp.readlines()
-    chat_text = "".join(lines)
+def process_blocks(chat_text: str) -> list:
 
     # the first block is always the user block and the last block is always the llm response that is true in most cases and this will be assumed so everything even numbered is user and odd numbered is llm response
 
@@ -131,7 +128,7 @@ if __name__ == "__main__":
     for i, block in enumerate(iterate_user_bot_response(chat_text=chat_text)):
         breakpoint()
         tex_elements = []
-        block_header = 'userprompt' if i % 2 == 0 else 'botresponse'
+        block_header = "userprompt" if i % 2 == 0 else "botresponse"
         for split_type, split_text in block_split_iterator(block):
             text = ""
             if split_type == "heading":
@@ -145,19 +142,21 @@ if __name__ == "__main__":
             else:
                 text = paragraph_to_tex(split_text)
 
-            # then detect code ol or ul block to process
-            # at a time only one is true that is the assumption
-            # code pattern and code blocks are special because they don't need any processing
-            # the combined pattern split into paragraph, ordered, and unordered lists
-            # and code block and then we detect individual blocks using appropriate regex
-
             if text:  # append if not empty
                 tex_elements.append(text)
-        processed_block_text = "\n\n".join(tex_elements)    
+        processed_block_text = "\n\n".join(tex_elements)
         processed_block_with_header = f"\\begin{{{block_header}}}\n\n{processed_block_text}\n\n\\end{{{block_header}}}"
         processed_blocks.append(processed_block_with_header)
+    return processed_blocks
 
-    md_to_tex = "\n\n".join(processed_blocks)
+
+if __name__ == "__main__":
+    with open("assorted 1.md", "r", encoding="utf8") as fp:
+        lines = fp.readlines()
+    chat_text = "".join(lines)
+
+    processed_chat = process_blocks(chat_text=chat_text)
+    md_to_tex = "\n\n".join(processed_chat)
 
     with open("assorted.tex", "w", encoding="utf8") as w:
         for line in md_to_tex:

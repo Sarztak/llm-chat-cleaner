@@ -1,7 +1,13 @@
 import re
 
-from md_to_html import escape_latex_text
 
+def escape_latex_text(s):
+    pattern = re.compile(r"([\\{}$&$%_#])")
+    return pattern.sub(r"\\\1", s)
+
+
+def is_plain_text(s):
+    return bool(re.fullmatch(r"[a-zA-Z0-9\\{}$&%_#\s]+", s))
 
 def process_inline_text(text: str) -> str:
     """
