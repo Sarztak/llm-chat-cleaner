@@ -170,7 +170,4 @@ if __name__ == "__main__":
     with open("assorted.tex", "w", encoding="utf8") as w:
         for line in md_to_tex:
             w.write(line)
-# - **Total Budget**: $2,000
-# - **Total Expenses**: $1,500
-# - **Remaining Budget**: $2,000 - $1,500 = $500
 
