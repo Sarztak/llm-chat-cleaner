@@ -1,5 +1,5 @@
 import re
-from helper import process_inline_text, escape_long_tokens
+from helper import process_inline_text
 from rich.traceback import install
 
 install()
@@ -159,7 +159,7 @@ def process_blocks(chat_text: str) -> list:
 
 
 if __name__ == "__main__":
-    with open("assorted 1.md", "r", encoding="utf8") as fp:
+    with open("./markdown/o4 mini meltdown.md", "r", encoding="utf8") as fp:
         lines = fp.readlines()
     chat_text = "".join(lines)
 
