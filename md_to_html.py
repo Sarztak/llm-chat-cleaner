@@ -30,7 +30,8 @@ def list_to_tex(text: str, ordered: bool = False) -> str:
     items = re.findall(item_pattern, text)
     li_list = [f"\\begin{{{_type}}}"]
     for item in items:
-        text = process_inline_text(item)
+        # text = process_inline_text(item)
+        text = process_blocks(item)
         item_text = f"\\item {text}"
         li_list.append(item_text)
     li_list.append(f"\\end{{{_type}}}")
@@ -129,7 +130,28 @@ def heading_to_tex(heading: str) -> str:
     return rf"{heading_level}{{{formatted_text}}}"
 
 
-def process_blocks(chat_text: str) -> list:
+def process_blocks(block: str) -> str:
+    processed_splits = []
+    for split_type, split_text in block_split_iterator(block):
+        text = ""
+        if split_type == "heading":
+            text = heading_to_tex(split_text)
+        elif split_type == "code":
+            text = code_to_tex(split_text)
+        elif split_type == "ol":
+            text = list_to_tex(split_text, ordered=True)
+        elif split_type == "ul":
+            text = list_to_tex(split_text, ordered=False)
+        else:
+            text = paragraph_to_tex(split_text)
+
+        if text:  # append if not an empty string
+            processed_splits.append(text)
+    processed_block_text = "\n\n".join(processed_splits)
+    return processed_block_text
+
+
+def process_chat(chat_text: str) -> list:
 
     # the first block is always the user block and the last block is always the llm response that is true in most cases and this will be assumed so everything even numbered is user and odd numbered is llm response
 
@@ -137,23 +159,7 @@ def process_blocks(chat_text: str) -> list:
     for i, block in enumerate(iterate_user_bot_response(chat_text=chat_text)):
         tex_elements = []
         block_header = "userprompt" if i % 2 == 0 else "botresponse"
-        for split_type, split_text in block_split_iterator(block):
-            print(split_text)
-            text = ""
-            if split_type == "heading":
-                text = heading_to_tex(split_text)
-            elif split_type == "code":
-                text = code_to_tex(split_text)
-            elif split_type == "ol":
-                text = list_to_tex(split_text, ordered=True)
-            elif split_type == "ul":
-                text = list_to_tex(split_text, ordered=False)
-            else:
-                text = paragraph_to_tex(split_text)
-
-            if text:  # append if not empty
-                tex_elements.append(text)
-        processed_block_text = "\n\n".join(tex_elements)
+        processed_block_text = process_blocks(block)
         processed_block_with_header = f"\\begin{{{block_header}}}\n\n{processed_block_text}\n\n\\end{{{block_header}}}"
         processed_blocks.append(processed_block_with_header)
     return processed_blocks
@@ -164,10 +170,9 @@ if __name__ == "__main__":
         lines = fp.readlines()
     chat_text = "".join(lines)
 
-    processed_chat = process_blocks(chat_text=chat_text)
-    md_to_tex = "\n\n".join(processed_chat)
+    processed_chat_text = process_chat(chat_text=chat_text)
+    md_to_tex = "\n\n".join(processed_chat_text)
 
     with open("assorted.tex", "w", encoding="utf8") as w:
         for line in md_to_tex:
             w.write(line)
-

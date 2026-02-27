@@ -40,12 +40,6 @@ def process_inline_text(text: str) -> str:
         re.MULTILINE,
     )
     splits = re.split(combined_pattern, text)
-    splits = [split for split in splits if split and split.strip()]
-
-    if (
-        len(splits) <= 1
-    ):  # if no splits are possible then there is nothing else to do except escape the text
-        return escape_latex_text(text)
 
     processed_splits = []
     for split in splits:
@@ -55,9 +49,8 @@ def process_inline_text(text: str) -> str:
                 m = re.search(combined_pattern, split)
                 for split_type in ["bold", "italic", "code", "math"]:
                     if m and m.group(split_type):
-                        split_text = m.group(split_type)
                         inner_match = re.search(
-                            pattern_dict[split_type]["inner"], split_text
+                            pattern_dict[split_type]["inner"], split
                         )
                         if inner_match:
                             inner_text = inner_match.groups()[-1]
@@ -67,7 +60,9 @@ def process_inline_text(text: str) -> str:
                             ].format(inner_text)
                             processed_splits.append(inner_text_tex_format)
             else:
-                processed_splits.append(escape_latex_text(split))
+                processed_splits.append(
+                    escape_latex_text(split)
+                )  # I realized that this is only thing which is needed for the base condition because in case of m being None is itself the base case
 
     return "".join(processed_splits)
 
