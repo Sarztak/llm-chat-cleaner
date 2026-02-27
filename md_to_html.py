@@ -138,6 +138,7 @@ def process_blocks(chat_text: str) -> list:
         tex_elements = []
         block_header = "userprompt" if i % 2 == 0 else "botresponse"
         for split_type, split_text in block_split_iterator(block):
+            print(split_text)
             text = ""
             if split_type == "heading":
                 text = heading_to_tex(split_text)
@@ -169,3 +170,7 @@ if __name__ == "__main__":
     with open("assorted.tex", "w", encoding="utf8") as w:
         for line in md_to_tex:
             w.write(line)
+# - **Total Budget**: $2,000
+# - **Total Expenses**: $1,500
+# - **Remaining Budget**: $2,000 - $1,500 = $500
+

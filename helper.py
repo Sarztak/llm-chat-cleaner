@@ -2,12 +2,9 @@ import re
 
 
 def escape_latex_text(s):
-    pattern = re.compile(r"([\\{}$&$%_#])")
+    pattern = re.compile(r"([\\{}&$%_#])")
     return pattern.sub(r"\\\1", s)
 
-
-def is_plain_text(s):
-    return bool(re.fullmatch(r"[a-zA-Z0-9\\{}$&%_#\s]+", s))
 
 def process_inline_text(text: str) -> str:
     """
@@ -18,22 +15,22 @@ def process_inline_text(text: str) -> str:
     pattern_dict = {
         "bold": {
             "outer": r"""(?P<bold>\*\*[^*]+\*\*)""",
-            "inner": re.compile(r"""\*\*([^*]+)\*\*""", re.M),
+            "inner": re.compile(r"""\*\*([^*]+)\*\*"""),
             "latex": r"\textbf{{{}}}",
         },
         "italic": {
             "outer": r"""(?<!\*)(?P<italic>\*(?!\*)[^*]+\*)""",
-            "inner": re.compile(r"""\*([^*]+)\*""", re.M),
+            "inner": re.compile(r"""\*([^*]+)\*"""),
             "latex": r"\textit{{{}}}",
         },
         "code": {
             "outer": r"""(?<!`)(?P<code>`(?!`)[^`]+`)""",
-            "inner": re.compile(r"""`([^`]+)`""", re.M),
+            "inner": re.compile(r"""`([^`]+)`"""),
             "latex": r"\seqsplit{{{}}}",
         },
         "math": {
-            "outer": r"""(?P<math>(?P<math_delim>\${1,2}).+(?P=math_delim))""",
-            "inner": re.compile(r"""((\${1,2})(.+)\2)""", re.M),
+            "outer": r"""(?P<math>(?P<math_delim>\${1,2}).*?(?P=math_delim))""",
+            "inner": re.compile(r"""((\${1,2})(.*?)\2)"""),
             "latex": "${}$",
         },
     }
@@ -63,7 +60,7 @@ def process_inline_text(text: str) -> str:
                             pattern_dict[split_type]["inner"], split_text
                         )
                         if inner_match:
-                            inner_text = inner_match.group(inner_match.lastindex)
+                            inner_text = inner_match.groups()[-1]
                             inner_text = process_inline_text(inner_text)
                             inner_text_tex_format = pattern_dict[split_type][
                                 "latex"
@@ -74,7 +71,8 @@ def process_inline_text(text: str) -> str:
 
     return "".join(processed_splits)
 
-def escape_long_tokens(text: str, threshold: int = 40) -> str: 
+
+def escape_long_tokens(text: str, threshold: int = 40) -> str:
     words = text.split()
     result = []
     for word in words:
