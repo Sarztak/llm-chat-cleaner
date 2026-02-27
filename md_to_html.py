@@ -1,5 +1,5 @@
 import re
-from helper import process_inline_text
+from helper import process_inline_text, escape_long_tokens
 from rich.traceback import install
 
 install()
@@ -35,7 +35,8 @@ def list_to_tex(text: str, ordered: bool = False) -> str:
         li_list.append(item_text)
     li_list.append(f"\\end{{{_type}}}")
     li_block = "\n".join(li_list)
-    return li_block
+    li_block_cleaned = clean_text(li_block)
+    return li_block_cleaned
 
 
 def iterate_user_bot_response(chat_text: str) -> Iterator[str]:
@@ -51,25 +52,29 @@ def iterate_user_bot_response(chat_text: str) -> Iterator[str]:
 
 def block_split_iterator(text_block: str) -> Iterator[Tuple[str, str]]:
 
-    code_pattern = re.compile(r"""^\s*(?P<code>```[\s\S]*?```)$""", re.M)
-    ol_pattern = re.compile(r"""^(?P<ol>\d+\.\s.*(?:\n*\d+\.\s.*)*)""", re.M)
-    ul_pattern = re.compile(r"""^(?P<ul>-\s.*(?:\n*-\s.*)*)""", re.M)
-    heading_pattern = re.compile(r"""(?P<heading>^#+\s+.*$)""", re.M)
+    code_pattern = r"""^\s*(?P<code>```[\s\S]*?```)$"""
+    ol_pattern = r"""^(?P<ol>\d+\.\s.*(?:\n*\d+\.\s.*)*)"""
+    ul_pattern = r"""^(?P<ul>-\s.*(?:\n*-\s.*)*)"""
+    heading_pattern = r"""(?P<heading>^#+\s+.*$)"""
 
     combined_pattern = re.compile(
         rf"""{code_pattern}|{ol_pattern}|{ul_pattern}|{heading_pattern}""",
         re.M,
     )
-
     splits = re.split(combined_pattern, text_block)
+
     for split in splits:
         if split and split.strip():
+            matched = False
             m = re.search(combined_pattern, split)
             for split_type in ["heading", "code", "ol", "ul"]:
                 if m and m.group(split_type):
                     split_text = m.group(split_type)
+                    matched = True
                     yield split_type, split_text
-            yield "paragraph", split
+                    break
+            if not matched:
+                yield "paragraph", split
 
 
 def paragraph_to_tex(paragraph: str) -> str:
@@ -92,13 +97,17 @@ def paragraph_to_tex(paragraph: str) -> str:
                 paragraph_tex_format = process_inline_text(split)
                 processed_splits.append(paragraph_tex_format)
     splits_joined = "".join(processed_splits)
-    return splits_joined
+    splits_joined_cleaned = clean_text(splits_joined)
+    return splits_joined_cleaned
 
 
 def code_to_tex(code: str) -> str:
     code = code.strip()
-    text = re.findall(r"""```(.+)```""", code)[0]
-    text = clean_text(text)
+    code_pattern = re.compile(r"""```([\s\S+]*?)```""", re.M)
+    m = re.search(code_pattern, code)
+    text = ""
+    if m:
+        text = m.group(1)
     return f"\\begin{{lstlisting}}[breaklines=true, breakatwhitespace=false]\n\n{text}\n\n\\end{{lstlisting}}"
 
 
@@ -108,11 +117,11 @@ def heading_to_tex(heading: str) -> str:
     n_hashes = len(leading_hashes)
     match n_hashes:
         case 1:
-            heading_level = r"\\section"
+            heading_level = r"\section"
         case 2:
-            heading_level = r"\\subsection"
+            heading_level = r"\subsection"
         case _ if n_hashes >= 3:
-            heading_level = r"\\subsubsection"
+            heading_level = r"\subsubsection"
         case _:
             heading_level = ""
     formatted_text = paragraph_to_tex(text)
@@ -126,7 +135,6 @@ def process_blocks(chat_text: str) -> list:
 
     processed_blocks = []
     for i, block in enumerate(iterate_user_bot_response(chat_text=chat_text)):
-        breakpoint()
         tex_elements = []
         block_header = "userprompt" if i % 2 == 0 else "botresponse"
         for split_type, split_text in block_split_iterator(block):

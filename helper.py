@@ -18,18 +18,18 @@ def process_inline_text(text: str) -> str:
     pattern_dict = {
         "bold": {
             "outer": r"""(?P<bold>\*\*[^*]+\*\*)""",
-            "inner": re.compile(r"""(\*\*([^*]+)\*\*)""", re.M),
-            "latex": r"\\textbf{{{}}}",
+            "inner": re.compile(r"""\*\*([^*]+)\*\*""", re.M),
+            "latex": r"\textbf{{{}}}",
         },
         "italic": {
             "outer": r"""(?<!\*)(?P<italic>\*(?!\*)[^*]+\*)""",
-            "inner": re.compile(r"""(\*([^*]+)\*)""", re.M),
-            "latex": r"\\textit{{{}}}",
+            "inner": re.compile(r"""\*([^*]+)\*""", re.M),
+            "latex": r"\textit{{{}}}",
         },
         "code": {
             "outer": r"""(?<!`)(?P<code>`(?!`)[^`]+`)""",
-            "inner": re.compile(r"""(`([^`]+)`)""", re.M),
-            "latex": r"\\texttt{{{}}}",
+            "inner": re.compile(r"""`([^`]+)`""", re.M),
+            "latex": r"\seqsplit{{{}}}",
         },
         "math": {
             "outer": r"""(?P<math>(?P<math_delim>\${1,2}).+(?P=math_delim))""",
@@ -63,7 +63,7 @@ def process_inline_text(text: str) -> str:
                             pattern_dict[split_type]["inner"], split_text
                         )
                         if inner_match:
-                            inner_text = inner_match.group(1)
+                            inner_text = inner_match.group(inner_match.lastindex)
                             inner_text = process_inline_text(inner_text)
                             inner_text_tex_format = pattern_dict[split_type][
                                 "latex"
@@ -73,3 +73,13 @@ def process_inline_text(text: str) -> str:
                 processed_splits.append(escape_latex_text(split))
 
     return "".join(processed_splits)
+
+def escape_long_tokens(text: str, threshold: int = 40) -> str: 
+    words = text.split()
+    result = []
+    for word in words:
+        if len(word) > threshold:
+            result.append(rf"\seqsplit{{{word}}}")
+        else:
+            result.append(word)
+    return " ".join(result)
