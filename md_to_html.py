@@ -92,7 +92,7 @@ def paragraph_to_tex(paragraph: str) -> str:
                 paragraph_tex_format = process_inline_text(split)
                 processed_splits.append(paragraph_tex_format)
     splits_joined = "".join(processed_splits)
-    return splits_joined
+    return formatted_tex
 
 
 def code_to_tex(code: str) -> str:
