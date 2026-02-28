@@ -1,15 +1,17 @@
 from rich.traceback import install
-from typing import Any
+from pathlib import Path
 
 install()
 from bs4 import BeautifulSoup, NavigableString, Tag
 import re
 from convert_math import *
 
+
 def check_navigable_string(element: Tag) -> str | None:
     if isinstance(element, NavigableString):
         return clean_and_esc_ele_text(element.string)
     return None
+
 
 def escape_latex_text(text: str) -> str:
     pattern = re.compile(r"([\\{}$&$%_#])")
@@ -28,11 +30,11 @@ def clean_text(text: str) -> str:
     return "\n".join(cleaned_lines)  # I am joining by just one \n
 
 
-def clean_and_esc_ele_text(element: Any[Tag, str], escape: bool = True) -> str:
+def clean_and_esc_ele_text(element: Tag | str, escape: bool = True) -> str:
     # there are two cases if the elements is already a string then return the string else extract it
     text = element.get_text() if isinstance(element, Tag) else element
     cleaned_text = clean_text(text)
-    if escape: # escape is not necessary when the text is code 
+    if escape:  # escape is not necessary when the text is code
         text = escape_latex_text(text)
     return cleaned_text
 
@@ -83,7 +85,7 @@ def process_inline_elements(element: Tag) -> str:
     return " ".join(processed_elements) if processed_elements else ""
 
 
-def process_list_elements(element, ordered=False):
+def process_list_elements(element: Tag, ordered: bool = False) -> str:
     if (result := check_navigable_string(element)) is not None:
         return result
 
@@ -92,7 +94,7 @@ def process_list_elements(element, ordered=False):
     for li in element.children:
         # process each li element
         if li.name == "li":
-            text = process_children(li) # I want this to recurse and parse children
+            text = process_children(li)  # I want this to recurse and parse children
             item_text = f"\\item {text}"
             li_list.append(item_text)
     # append begin itemize end itemize
@@ -101,77 +103,85 @@ def process_list_elements(element, ordered=False):
     return li_block
 
 
-def process_children(element):
+def process_children(element: Tag) -> str:
     if (result := check_navigable_string(element)) is not None:
+        # base condition to break the recursion
         return result
 
     text_block = []
 
     for child in element.children:
-        if child.name == "p": # a p tag can only contain inline elements
-            p_text = process_inline_elements(child)
-            text_block.append(p_text)
+        if child.name == "br":  # skip line breaks
+            continue
+
+        if child.name == "p":  # a p tag can only contain inline elements
+            text = process_inline_elements(child)
         elif child.name == "ul":
             # get all the immediate children which are li elements
-            ul_block = process_list_elements(child, ordered=False)
-            text_block.append(ul_block)
+            text = process_list_elements(child, ordered=False)
         elif child.name == "ol":
-            ol_block = process_list_elements(child, ordered=True)
-            text_block.append(ol_block)
+            text = process_list_elements(child, ordered=True)
         elif child.name == "code":
             text = clean_and_esc_ele_text(child, escape=False)
             if is_math_expression(text):
                 # convert to inline math
-                math_latex = convert_math_to_latex(text)
-                text_block.append(f"${math_latex}$")
+                text = convert_math_to_latex(text)
+                text = f"${text}$"
             else:
-                text_block.append(
-                    "\\begin{lstlisting}[breaklines=true, breakatwhitespace=false]\n"
-                )
-                text_block.append(text)
-                text_block.append("\\end{lstlisting}")
-        elif child.name == "br":
-            text_block.append(
-                " "
-            )  # an extra line break will be added; but this is a fragile way to do it as it relies on \n being added at the very end. I need to find a better way
+
+                text = f"\\begin{{lstlisting}}[breaklines=true, breakatwhitespace=false]\n\n{text}\n\n\\end{{lstlisting}}"
         else:
-            div_text = process_children(
+            text = process_children(
                 child
             ).strip()  # I don't need the extra lines added between blocks due to recursion
-            text_block.append(div_text)
 
-    # remove empty string from the text block
-    text_block = [t for t in text_block if t]
-    return "\n\n".join(
-        text_block
-    )  # I need one blank line between the children of the same div
+        if text:
+            text_block.append(text)
+
+    return "\n\n".join(text_block)
 
 
-def main():
-    with open("sevis.html", "r", encoding="utf8") as fp:
-        html_parser = BeautifulSoup(
-                fp, "html.parser", multi_valued_attributes=None
-        )
+def chat_html_to_latex(html: str) -> str:
+    html_parser = BeautifulSoup(html, "html.parser", multi_valued_attributes=None)
 
-    divs = html_parser.find_all("div")
-    messages = []
-    for div in divs:
-        if div.get("data-testid", "") == "user-message":
-            div_text = process_children(div)
-            messages.append(f"\\begin{{userprompt}}\n{div_text}\n\\end{{userprompt}}")
-        elif div.get("class", "").startswith(
-            "font-claude-response"
-        ):  # the font-claude-response can change, earlier it ws font-claude-message
-            div_text = process_children(div)
-            messages.append(f"\\begin{{botresponse}}\n{div_text}\n\\end{{botresponse}}")
-    latex = "\n\n".join(
-        messages
-    )  # I need one blank line between the div elements in the latex format
+    elements = html_parser.find_all("div")
 
-    with open("sevis_chat.tex", "w", encoding="utf8") as w:
-        for line in latex:
-            w.write(line)
+    results = []
+    for element in elements:
+        processed_elements = process_chat_elements(element)
+
+        if processed_elements is not None:
+            results.append(processed_elements)
+
+    return "\n\n".join(results)
+
+
+def process_chat_elements(element: Tag) -> str | None:
+    if (result := check_navigable_string(element)) is not None:
+        return result
+
+    header = None
+    latex_block = "\\begin{{{}}}\n\n{}\n\n\\end{{{}}}"
+
+    if element.get("data-testid", "") == "user-message":
+        header = "userprompt"
+    elif str(element.get("class", "")).startswith(
+        "font-claude-response"
+    ):  # the font-claude-response can change, earlier it ws font-claude-message
+        header = "botresponse"
+    else:
+        return None  # do not process any other elements
+
+    latex = process_children(element)
+    return latex_block.format(header, latex, header)
 
 
 if __name__ == "__main__":
-    main()
+    html_file_path = Path("sevis.html")
+
+    with open(html_file_path, "r", encoding="utf8") as fp:
+        html = fp.read()
+    latex = chat_html_to_latex(html)
+
+    with open("sevis_chat.tex", "w", encoding="utf8") as w:
+        w.write(latex)
