@@ -6,11 +6,47 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 import re
 from convert_math import *
 
+ele_to_tex_dict = {
+    "strong": {
+        "names": ("strong", "b"),
+        "latex": r"\textbf{{{}}}",
+    },
+    "italic": {
+        "names": ("em", "i"),
+        "latex": r"\textit{{{}}}",
+    },
+    "code": {
+        "names": ("code",),
+        "latex": r"\texttt{{{}}}",
+    },
+    "url": {
+        "names": ("a",),
+        "latex": r"\href{{{}}}{{{}}}",
+    },
+}
+
+inline_names = {name for entry in ele_to_tex_dict.values() for name in entry["names"]}
+
+
+def is_inline_only(element: Tag) -> bool:
+    if isinstance(element, NavigableString):
+        return True
+    elif all(
+        isinstance(child, NavigableString) or child.name in inline_names
+        for child in element.children
+    ):
+        return True
+    else:
+        return False
+
 
 def check_navigable_string(element: Tag) -> str | None:
     if isinstance(element, NavigableString):
         return clean_and_esc_ele_text(element.string)
-    return None
+
+
+# def has_only_nav_str_children(element: Tag) -> bool:
+#     return all(isinstance(child, NavigableString) for child in element.children)
 
 
 def escape_latex_text(text: str) -> str:
@@ -30,7 +66,9 @@ def clean_text(text: str) -> str:
     return "\n".join(cleaned_lines)  # I am joining by just one \n
 
 
-def clean_and_esc_ele_text(element: Tag | str, escape: bool = True) -> str:
+def clean_and_esc_ele_text(
+    element: Tag | NavigableString | str, escape: bool = True
+) -> str:
     # there are two cases if the elements is already a string then return the string else extract it
     text = element.get_text() if isinstance(element, Tag) else element
     cleaned_text = clean_text(text)
@@ -43,31 +81,10 @@ def process_inline_elements(element: Tag) -> str:
     if (result := check_navigable_string(element)) is not None:
         return result
 
-    ele_to_tex_dict = {
-        "strong": {
-            "names": ("strong", "b"),
-            "latex": r"\textbf{{{}}}",
-        },
-        "italic": {
-            "names": ("em", "i"),
-            "latex": r"\textit{{{}}}",
-        },
-        "code": {
-            "names": ("code",),
-            "latex": r"\texttt{{{}}}",
-        },
-        "url": {
-            "names": ("a",),
-            "latex": r"\href{{{}}}{{{}}}",
-        },
-    }
-
     processed_elements: list[str] = []
 
     for ele in element.children:
-        text = clean_and_esc_ele_text(
-            ele
-        )  # remove extra whitespaces and escape special characters
+        text = process_inline_elements(ele)
         latex = text
 
         for entry in ele_to_tex_dict.values():
@@ -94,6 +111,8 @@ def process_list_elements(element: Tag, ordered: bool = False) -> str:
     for li in element.children:
         # process each li element
         if li.name == "li":
+            if "what you do" in li.get_text():
+                breakpoint()
             text = process_children(li)  # I want this to recurse and parse children
             item_text = f"\\item {text}"
             li_list.append(item_text)
@@ -104,18 +123,16 @@ def process_list_elements(element: Tag, ordered: bool = False) -> str:
 
 
 def process_children(element: Tag) -> str:
-    if (result := check_navigable_string(element)) is not None:
-        # base condition to break the recursion
-        return result
+    if is_inline_only(element):
+        return process_inline_elements(element)
 
     text_block = []
 
     for child in element.children:
         if child.name == "br":  # skip line breaks
             continue
-
-        if child.name == "p":  # a p tag can only contain inline elements
-            text = process_inline_elements(child)
+        elif child.name == "p":  # a p tag can only contain inline elements
+            text = process_children(child)
         elif child.name == "ul":
             # get all the immediate children which are li elements
             text = process_list_elements(child, ordered=False)
@@ -131,9 +148,7 @@ def process_children(element: Tag) -> str:
 
                 text = f"\\begin{{lstlisting}}[breaklines=true, breakatwhitespace=false]\n\n{text}\n\n\\end{{lstlisting}}"
         else:
-            text = process_children(
-                child
-            ).strip()  # I don't need the extra lines added between blocks due to recursion
+            text = process_children(child)
 
         if text:
             text_block.append(text)
