@@ -9,8 +9,7 @@ def escape_latex_text(s):
 def process_inline_text(text: str) -> str:
     """
     This is supposed to returned text in latex format and does so recursively.
-    When there is just one word that can be rendered in latex without modification then
-    that is the base case
+    When there is just one word that can be rendered in latex then that is the base case.
     """
     pattern_dict = {
         "bold": {
@@ -68,6 +67,7 @@ def process_inline_text(text: str) -> str:
 
 
 def escape_long_tokens(text: str, threshold: int = 40) -> str:
+    """This was supposed to help but it didn't help that much"""
     words = text.split()
     result = []
     for word in words:
