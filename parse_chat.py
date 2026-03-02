@@ -132,12 +132,12 @@ def process_children(element: Tag) -> str:
         if child.name == "p":  # a p tag can only contain inline elements
             text = process_children(child)
         elif child.name == "img":
-            if (
-                child.get("alt", "") == "Uploaded image"
-                or child.get("alt", "") == "Generated image"
-            ):
-                src = child.get("src", "")
+            src = child.get("src", "")
+            if child.get("alt", "") == "Uploaded image":
                 text = f"\\chatgptimg{{{'.' + src}}}"
+            elif child.get("alt", "") == "Generated image":
+                breakpoint()
+                text = f"\\chatgptimg[\\raggedright]{{{'.' + src}}}"
         elif child.name == "ul":
             # get all the immediate children which are li elements
             text = process_list_elements(child, ordered=False)

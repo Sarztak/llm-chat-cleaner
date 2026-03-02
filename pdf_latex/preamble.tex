@@ -18,6 +18,8 @@
 \usepackage{microtype} 
 \usepackage{graphicx}
 \usepackage{adjustbox}
+\usepackage{xparse}
+
 % Color definitions
 \definecolor{headercolor}{RGB}{65,105,225}
 \definecolor{botcolor}{RGB}{200,80,80}
@@ -39,25 +41,39 @@
 \setlength{\parskip}{0.65em}
 \setlength{\parindent}{0pt}
 
+\NewDocumentCommand{\chatgptimg}{O{\raggedleft} O{0.3} m}{%
+    \begin{figure}[h]
+        #1  % Alignment (default: \raggedleft)
+        \adjustbox{max width=\textwidth, max height=#2\textwidth}{%
+            \includegraphics{#3}%
+        }
+    \end{figure}%
+}
+
+% Usage:
+% \chatgptimg{image.jpg}                           % Both defaults
+% \chatgptimg[\centering]{image.jpg}               % Custom alignment, default height
+% \chatgptimg[\centering][0.6]{image.jpg}          % Both custom
+% \chatgptimg[\raggedleft][0.6]{image.jpg}         % Default alignment, custom height
 % to add images from chatgpt
-\newcommand{\chatgptimg}[2][0.3]{
-    \begin{figure}[h]
-        \raggedleft
-        \adjustbox{max width=\textwidth, max height=#1\textheight}{
-            \includegraphics{#2}
-        }
-    \end{figure}
-}
-
-\newcommand{\chatgptimg}[3][\raggedleft]{%
-    \begin{figure}[h]
-        #1
-        \adjustbox{max width=\textwidth, max height=#2\textwidth}{
-            \includegraphics{#3}
-        }
-    \end{figure}
-}
-
+% \newcommand{\chatgptimg}[2][0.3]{
+%     \begin{figure}[h]
+%         \raggedleft
+%         \adjustbox{max width=\textwidth, max height=#1\textheight}{
+%             \includegraphics{#2}
+%         }
+%     \end{figure}
+% }
+%
+% \newcommand{\chatgptimg}[3][\raggedleft]{%
+%     \begin{figure}[h]
+%         #1
+%         \adjustbox{max width=\textwidth, max height=#2\textwidth}{
+%             \includegraphics{#3}
+%         }
+%     \end{figure}
+% }
+%
 % Usage:
 % Default (raggedleft):
 % \chatgptimg{0.4}{../path/to/image.jpg}
