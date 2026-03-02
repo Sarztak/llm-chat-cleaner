@@ -58,7 +58,7 @@ def convert_from_tex_to_pdf(tex_dir: Path, pdf_dir: Path) -> None:
             w.write(main_tex_template.format(tex_path))
         os.chdir(cwd / "pdf_latex")
         result = subprocess.Popen(
-            ["pdflatex", "-interaction=nonstopmode", "main.tex"],
+            ["xelatex", "-interaction=nonstopmode", "main.tex"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,

@@ -2,9 +2,11 @@
 % All package imports and basic settings
 
 % Packages
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{mathptmx}
+% \usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+% \usepackage{mathptmx}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
 \usepackage[margin=1in,bottom=1.2in]{geometry}
 \usepackage{xcolor}
 \usepackage{changepage}
@@ -13,11 +15,8 @@
 \usepackage{listings} % to handle code blocks
 \usepackage{seqsplit} % to break lines with special characters
 \usepackage{needspace}
-\usepackage{microtype}
+\usepackage{microtype} 
 
-% Declare extra math symbols
-\DeclareUnicodeCharacter{2248}{\approx}
-\DeclareUnicodeCharacter{00D7}{\times}
 
 % Color definitions
 \definecolor{headercolor}{RGB}{65,105,225}

@@ -26,7 +26,7 @@ ele_to_tex_dict = {
     "linebreak": {
         "names": ("br",),
         "latex": "\n",
-        }
+    },
 }
 
 inline_names = {name for entry in ele_to_tex_dict.values() for name in entry["names"]}
@@ -127,10 +127,8 @@ def process_children(element: Tag) -> str:
 
     for child in element.children:
         # if child.name == "br":  # skip line breaks
-            # continue
+        # continue
         if child.name == "p":  # a p tag can only contain inline elements
-            if "loose paraphrase" in child.text:
-                breakpoint()
             text = process_children(child)
         elif child.name == "ul":
             # get all the immediate children which are li elements
@@ -159,7 +157,6 @@ def process_children(element: Tag) -> str:
 
 
 def chat_html_to_latex(html: str) -> str:
-    breakpoint()
     html_parser = BeautifulSoup(html, "html.parser", multi_valued_attributes=None)
 
     elements = html_parser.find_all("div")

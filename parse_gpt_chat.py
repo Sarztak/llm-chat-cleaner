@@ -33,7 +33,6 @@ def process_chat_elements(element: Tag) -> str | None:
         header = "userprompt"
         # the font-claude-response can change, earlier it was font-claude-message
     elif element.get("data-message-author-role", "") == "assistant":
-        # breakpoint()
         header = "botresponse"
     else:
         return None  # do not process any other elements
