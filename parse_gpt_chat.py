@@ -10,7 +10,7 @@ from parse_chat import *
 def chat_html_to_latex(html: str) -> str:
     html_parser = BeautifulSoup(html, "html.parser", multi_valued_attributes=None)
 
-    elements = html_parser.find_all("div")
+    elements = html_parser.find_all("article")
 
     results = []
     for element in elements:
@@ -28,25 +28,22 @@ def process_chat_elements(element: Tag) -> str | None:
 
     header = None
     latex_block = "\\begin{{{}}}\n\n{}\n\n\\end{{{}}}"
-
-    if element.get("data-message-author-role", "") == "user":
+    if element.get("data-turn", "") == "user":
         header = "userprompt"
         # the font-claude-response can change, earlier it was font-claude-message
-    elif element.get("data-message-author-role", "") == "assistant":
+    elif element.get("data-turn", "") == "assistant":
         header = "botresponse"
     else:
         return None  # do not process any other elements
-
     latex = process_children(element)
     return latex_block.format(header, latex, header)
 
 
 if __name__ == "__main__":
-    html_file_path = Path("./rumi.html")
-
+    html_file_path = Path("./drones - Branch · Branch · Skybrush Studio API.html")
     with open(html_file_path, "r", encoding="utf8") as fp:
         html = fp.read()
     latex = chat_html_to_latex(html)
 
-    with open("sevis_chat.tex", "w", encoding="utf8") as w:
+    with open("index.tex", "w", encoding="utf8") as w:
         w.write(latex)

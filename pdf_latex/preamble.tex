@@ -16,8 +16,8 @@
 \usepackage{seqsplit} % to break lines with special characters
 \usepackage{needspace}
 \usepackage{microtype} 
-
-
+\usepackage{graphicx}
+\usepackage{adjustbox}
 % Color definitions
 \definecolor{headercolor}{RGB}{65,105,225}
 \definecolor{botcolor}{RGB}{200,80,80}
@@ -38,3 +38,35 @@
 % Paragraph spacing
 \setlength{\parskip}{0.65em}
 \setlength{\parindent}{0pt}
+
+% to add images from chatgpt
+\newcommand{\chatgptimg}[2][0.3]{
+    \begin{figure}[h]
+        \raggedleft
+        \adjustbox{max width=\textwidth, max height=#1\textheight}{
+            \includegraphics{#2}
+        }
+    \end{figure}
+}
+
+\newcommand{\chatgptimg}[3][\raggedleft]{%
+    \begin{figure}[h]
+        #1
+        \adjustbox{max width=\textwidth, max height=#2\textwidth}{
+            \includegraphics{#3}
+        }
+    \end{figure}
+}
+
+% Usage:
+% Default (raggedleft):
+% \chatgptimg{0.4}{../path/to/image.jpg}
+
+% Custom alignment:
+% \chatgptimg[\raggedright]{0.4}{../path/to/image.jpg}
+% \chatgptimg[\centering]{0.4}{../path/to/image.jpg}
+% \chatgptimg[\raggedleft]{0.4}{../path/to/image.jpg}
+% Usage:
+% \chatgptimg{../path/to/image.jpg}
+% Or with custom max height (e.g., 60% of text height):
+% \chatgptimg[0.6]{../path/to/image.jpg}
