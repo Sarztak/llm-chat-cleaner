@@ -3,7 +3,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import os
-import time
+
 
 def main():
     md_dir = Path("./markdown/")
@@ -32,6 +32,7 @@ def main():
             for line in md_to_tex:
                 w.write(line)
 
+
 def convert_from_tex_to_pdf(tex_dir: Path, pdf_dir: Path) -> None:
     main_tex_template = r"""
     \documentclass[11pt,a4paper]{{book}}
@@ -59,15 +60,19 @@ def convert_from_tex_to_pdf(tex_dir: Path, pdf_dir: Path) -> None:
             ["pdflatex", "-interaction=nonstopmode", "main.tex"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True
+            text=True,
+            encoding="utf-8",  # this is needed because when text=True python opens up a file and output has some non readable characters according to windows default format
+            errors="replace",
         )
         stdout, stderr = result.communicate()  # This blocks until the process finishes
         os.chdir(cwd)
         shutil.copy(cwd / "pdf_latex/main.pdf", pdf_dir / f"{path.stem}.pdf")
 
+
 def tex_to_pdf():
     duckduckgo = Path("./duckduckgo/")
-    convert_from_tex_to_pdf(tex_dir= duckduckgo / "tex", pdf_dir=duckduckgo / "pdf")
+    convert_from_tex_to_pdf(tex_dir=duckduckgo / "tex", pdf_dir=duckduckgo / "pdf")
+
 
 if __name__ == "__main__":
     # main()

@@ -1,6 +1,5 @@
 from parse_chat import chat_html_to_latex
 from pathlib import Path
-import os 
 from md_to_tex_pipeline import convert_from_tex_to_pdf
 
 def main():
