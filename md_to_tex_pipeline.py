@@ -3,6 +3,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import os
+import time
 
 
 def main():
@@ -66,6 +67,7 @@ def convert_from_tex_to_pdf(tex_dir: Path, pdf_dir: Path) -> None:
         )
         stdout, stderr = result.communicate()  # This blocks until the process finishes
         os.chdir(cwd)
+        time.sleep(5)
         shutil.copy(cwd / "pdf_latex/main.pdf", pdf_dir / f"{path.stem}.pdf")
 
 
