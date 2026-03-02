@@ -24,3 +24,8 @@ mkd_ast
 *.html
 main.synctex(busy)
 __pycache__
+claude/
+chats/
+markdown/
+duckduckgo/
+chats.zip

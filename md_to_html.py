@@ -37,7 +37,7 @@ def list_to_tex(text: str, ordered: bool = False) -> str:
     li_list.append(f"\\end{{{_type}}}")
     li_block = "\n".join(li_list)
     # li_block_cleaned = clean_text(li_block) I don't think this is needed because everything is going to pass through the paragraph processor which applies clean_text once when everything is process just before joining the block
-    return li_block_cleaned
+    return li_block
 
 
 def iterate_user_bot_response(chat_text: str) -> Iterator[str]:

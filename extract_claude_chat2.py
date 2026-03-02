@@ -1,21 +1,22 @@
-from bs4 import BeautifulSoup, NavigableString
+from parse_chat import chat_html_to_latex
 from pathlib import Path
-
+import os 
+from md_to_tex_pipeline import convert_from_tex_to_pdf
 
 def main():
-    with open('hyperband.html', 'r', encoding='utf8') as fp:
-        html_parser = BeautifulSoup(
-            fp, 'html.parser',multi_valued_attributes=None
-        )
+    claude_dir = Path("./claude")
+    (claude_dir / "tex").mkdir(exist_ok=True, parents=True)
+    (claude_dir / "pdf").mkdir(exist_ok=True, parents=True)
     
-    divs = html_parser.find_all('div')
-    for div in divs:
-        if div.get('data-testid', "") == 'user-message':
-            breakpoint()
-            ...
-        elif div.get('class', "").startswith('font-claude-message'):
-            breakpoint()
-            ...
+    
+    for html_file_path in (claude_dir / "html").glob("*.html"):
 
+        with open(html_file_path, "r", encoding="utf8") as fp:
+            html = fp.read()
+        latex = chat_html_to_latex(html)
+
+        with open(claude_dir / f"tex/{html_file_path.stem}.tex", "w", encoding="utf8") as w:
+            w.write(latex)
+    convert_from_tex_to_pdf(tex_dir=claude_dir / "tex", pdf_dir=claude_dir / "pdf")
 if __name__ == "__main__":
     main()

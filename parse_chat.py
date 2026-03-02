@@ -42,15 +42,11 @@ def is_inline_only(element: Tag) -> bool:
 
 def check_navigable_string(element: Tag) -> str | None:
     if isinstance(element, NavigableString):
-        return clean_and_esc_ele_text(element.string)
-
-
-# def has_only_nav_str_children(element: Tag) -> bool:
-#     return all(isinstance(child, NavigableString) for child in element.children)
+        return clean_and_esc_ele_text(element)
 
 
 def escape_latex_text(text: str) -> str:
-    pattern = re.compile(r"([\\{}$&$%_#])")
+    pattern = re.compile(r"([\\{}&$%_#])")
     return pattern.sub(r"\\\1", text)
 
 
@@ -73,7 +69,7 @@ def clean_and_esc_ele_text(
     text = element.get_text() if isinstance(element, Tag) else element
     cleaned_text = clean_text(text)
     if escape:  # escape is not necessary when the text is code
-        text = escape_latex_text(text)
+        cleaned_text = escape_latex_text(cleaned_text)
     return cleaned_text
 
 
@@ -86,7 +82,6 @@ def process_inline_elements(element: Tag) -> str:
     for ele in element.children:
         text = process_inline_elements(ele)
         latex = text
-
         for entry in ele_to_tex_dict.values():
             if ele.name in entry["names"]:
                 if ele.name == "a":
@@ -111,8 +106,6 @@ def process_list_elements(element: Tag, ordered: bool = False) -> str:
     for li in element.children:
         # process each li element
         if li.name == "li":
-            if "what you do" in li.get_text():
-                breakpoint()
             text = process_children(li)  # I want this to recurse and parse children
             item_text = f"\\item {text}"
             li_list.append(item_text)
@@ -139,13 +132,16 @@ def process_children(element: Tag) -> str:
         elif child.name == "ol":
             text = process_list_elements(child, ordered=True)
         elif child.name == "code":
-            text = clean_and_esc_ele_text(child, escape=False)
-            if is_math_expression(text):
+            text = clean_and_esc_ele_text(child, escape=True)
+            # two version one with and one without escape is need because code can be match formula and it may not be
+            # math formula does not require escape in some cases such as z_1 z subscript 1 but in some cases
+            # it is actual name such as var_x
+            text_no_esc = clean_and_esc_ele_text(child, escape=False)
+            if is_math_expression(text_no_esc):
                 # convert to inline math
-                text = convert_math_to_latex(text)
+                text = convert_math_to_latex(text_no_esc)
                 text = f"${text}$"
             else:
-
                 text = f"\\begin{{lstlisting}}[breaklines=true, breakatwhitespace=false]\n\n{text}\n\n\\end{{lstlisting}}"
         else:
             text = process_children(child)
@@ -180,9 +176,10 @@ def process_chat_elements(element: Tag) -> str | None:
 
     if element.get("data-testid", "") == "user-message":
         header = "userprompt"
+        # the font-claude-response can change, earlier it was font-claude-message
     elif str(element.get("class", "")).startswith(
-        "font-claude-response"
-    ):  # the font-claude-response can change, earlier it ws font-claude-message
+        ("font-claude-response", "font-claude-message")
+    ):
         header = "botresponse"
     else:
         return None  # do not process any other elements
@@ -192,7 +189,7 @@ def process_chat_elements(element: Tag) -> str | None:
 
 
 if __name__ == "__main__":
-    html_file_path = Path("sevis.html")
+    html_file_path = Path("./claude/html/Understanding .chm file format - Claude.html")
 
     with open(html_file_path, "r", encoding="utf8") as fp:
         html = fp.read()
