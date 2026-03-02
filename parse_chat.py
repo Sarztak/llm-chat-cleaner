@@ -32,6 +32,27 @@ ele_to_tex_dict = {
 inline_names = {name for entry in ele_to_tex_dict.values() for name in entry["names"]}
 
 
+def heading_to_tex(element: Tag) -> str:
+    if not element.name:
+        return ""
+    m = re.search(r"h([1-6])", element.name)
+    n_level = int(m.group(1)) if m else 0
+    match n_level:
+        case 1:
+            heading_level = r"\section"
+        case 2:
+            heading_level = r"\subsection"
+        case 3:
+            heading_level = r"\subsubsection"
+        case _ if n_level > 3:
+            heading_level = r"\textbf"
+        case _:
+            heading_level = ""
+    formatted_text = process_children(element)
+
+    return rf"{heading_level}{{{formatted_text}}}"
+
+
 def is_inline_only(element: Tag) -> bool:
     if isinstance(element, NavigableString):
         return True
@@ -131,12 +152,13 @@ def process_children(element: Tag) -> str:
         text = ""
         if child.name == "p":  # a p tag can only contain inline elements
             text = process_children(child)
+        elif child.name and re.match(r"h[1-6]", child.name):
+            text = heading_to_tex(child)
         elif child.name == "img":
             src = child.get("src", "")
             if child.get("alt", "") == "Uploaded image":
                 text = f"\\chatgptimg{{{'.' + src}}}"
             elif child.get("alt", "") == "Generated image":
-                breakpoint()
                 text = f"\\chatgptimg[\\raggedright]{{{'.' + src}}}"
         elif child.name == "ul":
             # get all the immediate children which are li elements
