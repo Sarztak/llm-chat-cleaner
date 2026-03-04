@@ -1,8 +1,7 @@
 from rich.traceback import install
-from pathlib import Path
 
 install()
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import NavigableString, Tag
 import re
 from convert_math import *
 
@@ -156,10 +155,22 @@ def process_children(element: Tag) -> str:
             text = heading_to_tex(child)
         elif child.name == "img":
             src = child.get("src", "")
+            # This is only specific to chatgpt,
+            # --------------------------------------------------------------#
             if child.get("alt", "") == "Uploaded image":
                 text = f"\\chatgptimg{{{'.' + src}}}"
             elif child.get("alt", "") == "Generated image":
                 text = f"\\chatgptimg[\\raggedright]{{{'.' + src}}}"
+            # --------------------------------------------------------------#
+            
+            # This is specific only to claude; claude does not generate images;
+            # alt has image name; replace preview with image name in the alt
+            # a better idea is just to add .jpg to preview(n) because directory contains that
+            # preview(n) does not exists. a file called preview(n) exists
+            # so some preprocessing needs to be done to name the images before hand
+            else:
+                text = f"\\chatgptimg{{{'..' + src}}}"
+
         elif child.name == "ul":
             # get all the immediate children which are li elements
             text = process_list_elements(child, ordered=False)
@@ -180,54 +191,9 @@ def process_children(element: Tag) -> str:
         else:
             text = process_children(child)
 
-        if text:
+        if text and not re.search(
+            r"You said:|ChatGPT said:", text
+        ):  # the search is only ChatGPT specific
             text_block.append(text)
 
     return "\n\n".join(text_block)
-
-
-def chat_html_to_latex(html: str) -> str:
-    html_parser = BeautifulSoup(html, "html.parser", multi_valued_attributes=None)
-
-    elements = html_parser.find_all("div")
-
-    results = []
-    for element in elements:
-        processed_elements = process_chat_elements(element)
-
-        if processed_elements is not None:
-            results.append(processed_elements)
-
-    return "\n\n".join(results)
-
-
-def process_chat_elements(element: Tag) -> str | None:
-    if (result := check_navigable_string(element)) is not None:
-        return result
-
-    header = None
-    latex_block = "\\begin{{{}}}\n\n{}\n\n\\end{{{}}}"
-
-    if element.get("data-testid", "") == "user-message":
-        header = "userprompt"
-        # the font-claude-response can change, earlier it was font-claude-message
-    elif str(element.get("class", "")).startswith(
-        ("font-claude-response", "font-claude-message")
-    ):
-        header = "botresponse"
-    else:
-        return None  # do not process any other elements
-
-    latex = process_children(element)
-    return latex_block.format(header, latex, header)
-
-
-if __name__ == "__main__":
-    html_file_path = Path("./claude/html/Understanding .chm file format - Claude.html")
-
-    with open(html_file_path, "r", encoding="utf8") as fp:
-        html = fp.read()
-    latex = chat_html_to_latex(html)
-
-    with open("sevis_chat.tex", "w", encoding="utf8") as w:
-        w.write(latex)

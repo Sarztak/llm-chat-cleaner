@@ -30,7 +30,6 @@ def process_chat_elements(element: Tag) -> str | None:
     latex_block = "\\begin{{{}}}\n\n{}\n\n\\end{{{}}}"
     if element.get("data-turn", "") == "user":
         header = "userprompt"
-        # the font-claude-response can change, earlier it was font-claude-message
     elif element.get("data-turn", "") == "assistant":
         header = "botresponse"
     else:
