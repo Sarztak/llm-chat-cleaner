@@ -9,6 +9,7 @@ import os
 import shutil
 from PIL import Image
 
+
 def fix_img_path(html: str) -> str:
     pattern = re.compile(
         r"""<img\s+([^>]*?)alt="([^"]+)"([^>]*?)src="([^"]+)"([^>]*?)>"""
@@ -26,7 +27,7 @@ def fix_img_path(html: str) -> str:
         if os.path.exists(old_src):
             shutil.copy(old_src, new_src)
             img = Image.open(new_src)
-            img.save(old_src + '.png', "PNG")
+            img.save(old_src + ".png", "PNG")
         new_img_tag = f'<img {before_alt}alt="{alt_filename}"{between}src="{old_src}.png"{after_src}>'
         return new_img_tag
 
@@ -49,6 +50,8 @@ def chat_html_to_latex(html: str) -> str:
 
 
 def process_chat_elements(element: Tag) -> str | None:
+    soup = BeautifulSoup('', 'html.parser')
+
     if (result := check_navigable_string(element)) is not None:
         return result
 
@@ -57,6 +60,13 @@ def process_chat_elements(element: Tag) -> str | None:
 
     if element.get("class", "") == "mb-1 mt-6 group":
         header = "userprompt"
+        chat_div = element.find('div', attrs={"data-testid": "user-message"})
+        img_tags = element.find_all('img')
+        new_tag = soup.new_tag('div')
+        for img_tag in img_tags:
+            new_tag.append(img_tag)
+        new_tag.append(chat_div)
+        element = new_tag # needs to be reassigned because I am using the same name when passing to process_children
         # the font-claude-response can change, earlier it was font-claude-message
     elif str(element.get("class", "")).startswith(
         ("font-claude-response", "font-claude-message")
