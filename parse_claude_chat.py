@@ -7,7 +7,7 @@ from convert_math import *
 from parse_chat import *
 import os
 import shutil
-
+from PIL import Image
 
 def fix_img_path(html: str) -> str:
     pattern = re.compile(
@@ -20,11 +20,14 @@ def fix_img_path(html: str) -> str:
         between = match[3]
         old_src = match[4]
         after_src = match[5]
-        src_dir = Path(old_src).parent
-        new_src = src_dir / alt_filename
+        # src_dir = Path(old_src).parent
+        # new_src = src_dir / alt_filename
+        new_src = old_src + ".webp"
         if os.path.exists(old_src):
             shutil.copy(old_src, new_src)
-        new_img_tag = f'<img {before_alt}alt="{alt_filename}"{between}src="{new_src.as_posix()}"{after_src}>'
+            img = Image.open(new_src)
+            img.save(old_src + '.png', "PNG")
+        new_img_tag = f'<img {before_alt}alt="{alt_filename}"{between}src="{old_src}.png"{after_src}>'
         return new_img_tag
 
     updated_html = pattern.sub(update_img_tag, html)
@@ -35,7 +38,6 @@ def chat_html_to_latex(html: str) -> str:
     html_parser = BeautifulSoup(html, "html.parser", multi_valued_attributes=None)
 
     elements = html_parser.find_all("div")
-
     results = []
     for element in elements:
         processed_elements = process_chat_elements(element)
@@ -53,7 +55,7 @@ def process_chat_elements(element: Tag) -> str | None:
     header = None
     latex_block = "\\begin{{{}}}\n\n{}\n\n\\end{{{}}}"
 
-    if element.get("data-testid", "") == "user-message":
+    if element.get("class", "") == "mb-1 mt-6 group":
         header = "userprompt"
         # the font-claude-response can change, earlier it was font-claude-message
     elif str(element.get("class", "")).startswith(

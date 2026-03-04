@@ -2,7 +2,7 @@ from rich.traceback import install
 from pathlib import Path
 
 install()
-from bs4 import Tag
+from bs4 import Tag, BeautifulSoup
 from convert_math import *
 from parse_chat import *
 
