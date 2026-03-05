@@ -169,7 +169,7 @@ def process_children(element: Tag) -> str:
             # preview(n) does not exists. a file called preview(n) exists
             # so some preprocessing needs to be done to name the images before hand
             else:
-                text = f"\\chatgptimg{{{'.' + src}}}"
+                text = f"\\chatgptimg{{{src}}}"
 
         elif child.name == "ul":
             # get all the immediate children which are li elements

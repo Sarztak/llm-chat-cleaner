@@ -8,6 +8,7 @@ from parse_chat import *
 import os
 import shutil
 from PIL import Image
+from md_to_tex_pipeline import convert_from_tex_to_pdf
 
 
 def fix_img_path(html: str) -> str:
@@ -15,20 +16,46 @@ def fix_img_path(html: str) -> str:
         r"""<img\s+([^>]*?)alt="([^"]+)"([^>]*?)src="([^"]+)"([^>]*?)>"""
     )
 
-    def update_img_tag(match):
+    def update_img_tag(match: re.Match[str]) -> str:
+        cwd = Path.cwd()
+        # old_src this path is relative to the current directory ; so something like ./xyz/abc
+        # I need to construct the absolute path. Currently all the chats are stored in folder claude/html
+        # claude folder has html, tex and pdf folders and the html folder has folders in which the images live
+        # so the absolute path would be cwd / claude / html / old_src
+        # pathlib Path will normalize the path even with ./xyz/abc
+        # few other things to consider is that the src should not have an extension; those with extension are
+        # not uploaded by the user
+        # also .webp is the binary file format in which the images uploaded by the user are downloaded when the chat
+        # is saved from the browser using save as file command
+        # also .webp files are not rendered by latex therefore they need to be converted to png by using Image from PIL
+
         before_alt = match[1]
         alt_filename = match[2]
         between = match[3]
         old_src = match[4]
         after_src = match[5]
-        # src_dir = Path(old_src).parent
-        # new_src = src_dir / alt_filename
-        new_src = old_src + ".webp"
-        if os.path.exists(old_src):
-            shutil.copy(old_src, new_src)
+
+        if Path(old_src).suffix != "":  # if a suffix exists no need to add anything
+            # return the same tag unchanged
+            return f'<img {before_alt}alt="{alt_filename}"{between}src="{old_src}"{after_src}>'
+
+        abs_old_src = str(cwd / "claude/html" / Path(old_src))
+        abs_old_src = abs_old_src.replace("\\", "/")
+        new_src = (
+            abs_old_src + ".webp"
+        )  # this is just something I found out that files are binary webp
+        if os.path.exists(abs_old_src):
+            # copy the binary file but with added extension .webp
+            shutil.copy(abs_old_src, new_src)
+            # open the webp file and then save with .png extension
             img = Image.open(new_src)
-            img.save(old_src + ".png", "PNG")
-        new_img_tag = f'<img {before_alt}alt="{alt_filename}"{between}src="{old_src}.png"{after_src}>'
+            img.save(abs_old_src + ".png", "PNG")
+            new_img_tag = f'<img {before_alt}alt="{alt_filename}"{between}src="{abs_old_src}.png"{after_src}>'
+        else:
+            # if the path does not exists then there is no point of img tag because it will get to the
+            # latex files and then cause error
+            # since the path does to the .png or any other file referenced by the src does not exists
+            return ""
         return new_img_tag
 
     updated_html = pattern.sub(update_img_tag, html)
@@ -50,23 +77,23 @@ def chat_html_to_latex(html: str) -> str:
 
 
 def process_chat_elements(element: Tag) -> str | None:
-    soup = BeautifulSoup('', 'html.parser')
+    soup = BeautifulSoup("", "html.parser")
 
     if (result := check_navigable_string(element)) is not None:
         return result
 
     header = None
     latex_block = "\\begin{{{}}}\n\n{}\n\n\\end{{{}}}"
-
-    if element.get("class", "") == "mb-1 mt-6 group":
+    if str(element.get("class", "")).startswith(("mb-1 mt-6 group", "mb-1 mt-1")):
+        # the mb-1 mt-6 group or mb-1 mt-1 groups are fragile and they can change
         header = "userprompt"
-        chat_div = element.find('div', attrs={"data-testid": "user-message"})
-        img_tags = element.find_all('img')
-        new_tag = soup.new_tag('div')
+        chat_div = element.find("div", attrs={"data-testid": "user-message"})
+        img_tags = element.find_all("img")
+        new_tag = soup.new_tag("div")
         for img_tag in img_tags:
             new_tag.append(img_tag)
         new_tag.append(chat_div)
-        element = new_tag # needs to be reassigned because I am using the same name when passing to process_children
+        element = new_tag  # needs to be reassigned because I am using the same name when passing to process_children
         # the font-claude-response can change, earlier it was font-claude-message
     elif str(element.get("class", "")).startswith(
         ("font-claude-response", "font-claude-message")
@@ -79,15 +106,36 @@ def process_chat_elements(element: Tag) -> str | None:
     return latex_block.format(header, latex, header)
 
 
+def main():
+    claude_dir = Path("./claude")
+    (claude_dir / "tex").mkdir(exist_ok=True, parents=True)
+    (claude_dir / "pdf").mkdir(exist_ok=True, parents=True)
+
+    for html_file_path in (claude_dir / "html").glob("*.html"):
+
+        with open(html_file_path, "r", encoding="utf8") as fp:
+            html = fp.read()
+
+        updated_html = fix_img_path(html)
+        latex = chat_html_to_latex(updated_html)
+
+        with open(
+            claude_dir / f"tex/{html_file_path.stem}.tex", "w", encoding="utf8"
+        ) as w:
+            w.write(latex)
+    convert_from_tex_to_pdf(tex_dir=claude_dir / "tex", pdf_dir=claude_dir / "pdf")
+
+
 if __name__ == "__main__":
-    html_file_path = Path(
-        "./Presenting past work to non-technical researchers - Claude.html"
-    )
-
-    with open(html_file_path, "r", encoding="utf8") as fp:
-        html = fp.read()
-    updated_html = fix_img_path(html)
-    latex = chat_html_to_latex(updated_html)
-
-    with open("index.tex", "w", encoding="utf8") as w:
-        w.write(latex)
+    main()
+    # html_file_path = Path(
+    #     "./claude/html/Structure of Academic Research Papers - Claude.html"
+    # )
+    #
+    # with open(html_file_path, "r", encoding="utf8") as fp:
+    #     html = fp.read()
+    # updated_html = fix_img_path(html)
+    # latex = chat_html_to_latex(updated_html)
+    #
+    # with open("index.tex", "w", encoding="utf8") as w:
+    #     w.write(latex)
