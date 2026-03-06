@@ -3,8 +3,9 @@ from pathlib import Path
 import shutil
 import subprocess
 import os
-import time
 from loguru import logger
+import textwrap
+
 
 def main():
     md_dir = Path("./markdown/")
@@ -35,20 +36,24 @@ def main():
 
 
 def convert_from_tex_to_pdf(tex_dir: Path, pdf_dir: Path) -> None:
-    main_tex_template = r"""
-    \documentclass[11pt,a4paper]{{book}}
-    % Include all package imports and settings
-    \input{{preamble}}
-    % Include custom environment definitions
-    \input{{environments}}
-    \begin{{document}}
-    % Include conversation files
-    \input{{"{}"}}
-    \end{{document}}
-    """
+    # textwrap is just to remove the extra spaces in the beginning of each line while writing the file
+    main_tex_template = textwrap.dedent(r"""
+        \documentclass[11pt,a4paper]{{book}}
+        % Include all package imports and settings
+        \input{{preamble}}
+        % Include custom environment definitions
+        \input{{environments}}
+        \begin{{document}}
+        % Include conversation files
+        \input{{"{}"}}
+        \end{{document}}
+    """).lstrip()
 
     cwd = Path.cwd()
     main_tex_path = cwd / "pdf_latex/main.tex"
+
+    """clear the main.aux, main.log and main.out files before running the command since these files can stop the execution from processing to completing"""
+
     for path in tex_dir.iterdir():
         logger.info(f"Opening file: {path.name}")
         with open(main_tex_path, "w", encoding="utf8") as w:
@@ -58,7 +63,7 @@ def convert_from_tex_to_pdf(tex_dir: Path, pdf_dir: Path) -> None:
             )  # latex can handle windows path with forward slash
             w.write(main_tex_template.format(tex_path))
         os.chdir(cwd / "pdf_latex")
-        result = subprocess.Popen(
+        result = subprocess.run(
             ["xelatex", "-interaction=nonstopmode", "main.tex"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -66,9 +71,8 @@ def convert_from_tex_to_pdf(tex_dir: Path, pdf_dir: Path) -> None:
             encoding="utf-8",  # this is needed because when text=True python opens up a file and output has some non readable characters according to windows default format
             errors="replace",
         )
-        stdout, stderr = result.communicate()  # This blocks until the process finishes
+        stdout, stderr = result.stdout, result.stderr
         os.chdir(cwd)
-        time.sleep(5)
         shutil.copy(cwd / "pdf_latex/main.pdf", pdf_dir / f"{path.stem}.pdf")
 
 
