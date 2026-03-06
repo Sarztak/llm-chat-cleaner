@@ -4,7 +4,7 @@ import shutil
 import subprocess
 import os
 import time
-
+from loguru import logger
 
 def main():
     md_dir = Path("./markdown/")
@@ -50,6 +50,7 @@ def convert_from_tex_to_pdf(tex_dir: Path, pdf_dir: Path) -> None:
     cwd = Path.cwd()
     main_tex_path = cwd / "pdf_latex/main.tex"
     for path in tex_dir.iterdir():
+        logger.info(f"Opening file: {path.name}")
         with open(main_tex_path, "w", encoding="utf8") as w:
             tex_path = str(cwd / path)
             tex_path = tex_path.replace(

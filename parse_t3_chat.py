@@ -10,9 +10,13 @@ from md_to_tex_pipeline import convert_from_tex_to_pdf
 
 
 def chat_html_to_latex(html: str) -> str:
+    """This function finds the top level element which may be a div/article etc that contains user/assistant text"""
     html_parser = BeautifulSoup(html, "html.parser", multi_valued_attributes=None)
 
-    elements = html_parser.find_all("article")
+    # for t3 chat there are two divs with attributes role & aria-label
+    # role is set to "article" and aria-label is set to Your message: and Assistant message: 
+    # this will be used to filter out the relevant elements
+    elements = html_parser.find_all("div", attrs={"role": "article"}) 
 
     results = []
     for element in elements:
@@ -30,9 +34,9 @@ def process_chat_elements(element: Tag) -> str | None:
 
     header = None
     latex_block = "\\begin{{{}}}\n\n{}\n\n\\end{{{}}}"
-    if element.get("data-turn", "") == "user":
+    if element.get("aria-label", "") == "Your message":
         header = "userprompt"
-    elif element.get("data-turn", "") == "assistant":
+    elif element.get("aria-label", "") == "Assistant message":
         header = "botresponse"
     else:
         return None  # do not process any other elements
@@ -41,11 +45,11 @@ def process_chat_elements(element: Tag) -> str | None:
 
 
 def main():
-    gpt_dir = Path("./gpt")
-    (gpt_dir / "tex").mkdir(exist_ok=True, parents=True)
-    (gpt_dir / "pdf").mkdir(exist_ok=True, parents=True)
+    t3_dir = Path("./t3")
+    (t3_dir / "tex").mkdir(exist_ok=True, parents=True)
+    (t3_dir / "pdf").mkdir(exist_ok=True, parents=True)
 
-    for html_file_path in (gpt_dir / "html").glob("*.html"):
+    for html_file_path in (t3_dir / "html").glob("*.html"):
         logger.info(f"File name: {html_file_path.name}")
 
         with open(html_file_path, "r", encoding="utf8") as fp:
@@ -54,16 +58,16 @@ def main():
         latex = chat_html_to_latex(html)
 
         with open(
-            gpt_dir / f"tex/{html_file_path.stem}.tex", "w", encoding="utf8"
+            t3_dir / f"tex/{html_file_path.stem}.tex", "w", encoding="utf8"
         ) as w:
             w.write(latex)
         logger.info(f"File {html_file_path.stem}.tex written")
-    convert_from_tex_to_pdf(tex_dir=gpt_dir / "tex", pdf_dir=gpt_dir / "pdf")
+    convert_from_tex_to_pdf(tex_dir=t3_dir / "tex", pdf_dir=t3_dir / "pdf")
 
 
 if __name__ == "__main__":
     cwd = Path.cwd()
-    logger.add(cwd / "logs/chat_gpt_parse.log", mode="w")
+    logger.add(cwd / "logs/chat_t3_parse.log", mode="w")
     main()
     # html_file_path = Path("./drones - Branch · Branch · Skybrush Studio API.html")
     # with open(html_file_path, "r", encoding="utf8") as fp:

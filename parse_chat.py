@@ -1,6 +1,8 @@
 from rich.traceback import install
-
 install()
+import os
+from loguru import logger
+from pathlib import Path
 from bs4 import NavigableString, Tag
 import re
 from convert_math import *
@@ -157,11 +159,29 @@ def process_children(element: Tag) -> str:
             src = child.get("src", "")
             # This is only specific to chatgpt,
             # --------------------------------------------------------------#
-            if child.get("alt", "") == "Uploaded image":
-                text = f"\\chatgptimg{{{'.' + src}}}"
-            elif child.get("alt", "") == "Generated image":
-                text = f"\\chatgptimg[\\raggedright]{{{'.' + src}}}"
+            cwd = Path.cwd()
+
+            gpt_img_path = str(cwd / "gpt/html" / Path(src))
+            gpt_img_path = gpt_img_path.replace("\\", "/")
+            if os.path.exists(gpt_img_path):
+                # I should check if the file really exists or not
+                if child.get("alt", "") == "Uploaded image":
+                    logger.info(f"Uploaded Img path: {gpt_img_path}")
+                    text = f"\\chatgptimg{{{gpt_img_path}}}"
+                elif child.get("alt", "") == "Generated image":
+                    logger.info(f"Generated Img path: {gpt_img_path}")
+                    text = f"\\chatgptimg[\\raggedright]{{{ gpt_img_path}}}"
             # --------------------------------------------------------------#
+
+            # This is for T3 only
+
+            t3_img_path = str(cwd / "t3/html" / Path(src))
+            t3_img_path = t3_img_path.replace("\\", "/")
+            if os.path.exists(t3_img_path):
+                # I should check if the file really exists or not
+                if child.get("alt", "") == "Attached image":
+                    logger.info(f"Uploaded Img path: {t3_img_path}")
+                    text = f"\\chatgptimg{{{t3_img_path}}}"
 
             # This is specific only to claude; claude does not generate images;
             # alt has image name; replace preview with image name in the alt

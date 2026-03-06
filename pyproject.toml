@@ -7,6 +7,7 @@ requires-python = ">=3.10"
 dependencies = [
     "beautifulsoup4>=4.12.3",
     "html-to-markdown>=2.19.7",
+    "loguru>=0.7.3",
     "lxml>=6.0.2",
     "markdown>=3.10.1",
     "markdownify>=1.2.2",

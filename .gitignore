@@ -26,6 +26,8 @@ main.synctex(busy)
 __pycache__
 claude/
 chats/
+gpt/
+t3/
 markdown/
 duckduckgo/
 chats.zip
