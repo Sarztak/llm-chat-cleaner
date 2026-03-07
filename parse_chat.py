@@ -1,4 +1,5 @@
 from rich.traceback import install
+
 install()
 import os
 from loguru import logger
@@ -148,8 +149,14 @@ def process_children(element: Tag) -> str:
     text_block = []
 
     for child in element.children:
-        # if child.name == "br":  # skip line breaks
-        # continue
+        if child.name in (
+            "br",
+            "button",
+            "span",
+            "script",
+            # "form"  cannot use form because t3 chats are nested inside a form tag
+        ):
+            continue
         text = ""
         if child.name == "p":  # a p tag can only contain inline elements
             text = process_children(child)

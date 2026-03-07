@@ -69,9 +69,10 @@ def convert_from_tex_to_pdf(tex_dir: Path, pdf_dir: Path) -> None:
             stderr=subprocess.PIPE,
             text=True,
             encoding="utf-8",  # this is needed because when text=True python opens up a file and output has some non readable characters according to windows default format
-            errors="replace",
         )
         stdout, stderr = result.stdout, result.stderr
+        if stderr:
+            logger.error(f"Error: {stderr} while executing the file: {path.name}")
         os.chdir(cwd)
         shutil.copy(cwd / "pdf_latex/main.pdf", pdf_dir / f"{path.stem}.pdf")
 
