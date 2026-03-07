@@ -9,7 +9,7 @@ import os
 import shutil
 from PIL import Image
 from md_to_tex_pipeline import convert_from_tex_to_pdf
-
+from parse_chat import process_children, check_navigable_string
 
 def fix_img_path(html: str) -> str:
     pattern = re.compile(
@@ -106,7 +106,7 @@ def process_chat_elements(element: Tag) -> str | None:
     return latex_block.format(header, latex, header)
 
 
-def main():
+def run_all_files():
     claude_dir = Path("./claude")
     (claude_dir / "tex").mkdir(exist_ok=True, parents=True)
     (claude_dir / "pdf").mkdir(exist_ok=True, parents=True)
@@ -125,17 +125,20 @@ def main():
             w.write(latex)
     convert_from_tex_to_pdf(tex_dir=claude_dir / "tex", pdf_dir=claude_dir / "pdf")
 
+def test_one_file():
+    html_file_path = Path(
+        "./claude/html/Structure of Academic Research Papers - Claude.html"
+    )
+
+    with open(html_file_path, "r", encoding="utf8") as fp:
+        html = fp.read()
+    updated_html = fix_img_path(html)
+    latex = chat_html_to_latex(updated_html)
+
+    with open("index.tex", "w", encoding="utf8") as w:
+        w.write(latex)
 
 if __name__ == "__main__":
-    main()
-    # html_file_path = Path(
-    #     "./claude/html/Structure of Academic Research Papers - Claude.html"
-    # )
-    #
-    # with open(html_file_path, "r", encoding="utf8") as fp:
-    #     html = fp.read()
-    # updated_html = fix_img_path(html)
-    # latex = chat_html_to_latex(updated_html)
-    #
-    # with open("index.tex", "w", encoding="utf8") as w:
-    #     w.write(latex)
+    cwd = Path.cwd()
+    logger.add(cwd / "logs/chat_claude_parse.log", mode="w")
+    run_all_files()

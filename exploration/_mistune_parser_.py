@@ -2,26 +2,25 @@ from rich.traceback import install; install()
 from pathlib import Path
 from html_to_markdown import convert
 import mistune
-from collections import Counter
 import re 
 
-def open_html(file_path):
+def open_html(file_path: str | Path) -> str:
     with open(file_path, 'r', encoding='utf-8') as r:
-        html = r.readlines()
-        html = "\n".join(html)
+        lines: list[str] = r.readlines()
+        html: str = "\n".join(lines)
     return html
 
-def h2m(file_path, out_path):
-        html = open_html(file_path, out_path)
+def h2m(file_path: str | Path, out_path: str | Path) -> None:
+        html = open_html(file_path)
         markdown = convert(html)
         with open(out_path, 'w', encoding='utf-8') as w:
             w.write(markdown)
 
-def get_ast_from_markdown(file_path):
-    html = open_html(file_path)
+def get_ast_from_markdown(file_path: str | Path) -> list[dict[str, str]]:
+    html:str = open_html(file_path)
     markdown = convert(html)
     mkd_parser = mistune.create_markdown(renderer='ast')
-    mkd_ast = mkd_parser(markdown)
+    mkd_ast: list[dict[str, str]] = mkd_parser(markdown)
     return mkd_ast
 
 def strong(text):

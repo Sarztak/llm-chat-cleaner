@@ -6,7 +6,7 @@ from loguru import logger
 from pathlib import Path
 from bs4 import NavigableString, Tag
 import re
-from convert_math import *
+from convert_math import convert_math_to_latex
 
 ele_to_tex_dict = {
     "strong": {
@@ -154,7 +154,7 @@ def process_children(element: Tag) -> str:
             "button",
             "span",
             "script",
-            # "form"  cannot use form because t3 chats are nested inside a form tag
+            # "form"  # cannot use form because t3 chats are nested inside a form tag
         ):
             continue
         text = ""

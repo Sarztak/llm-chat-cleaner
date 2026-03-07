@@ -4,8 +4,7 @@ from pathlib import Path
 
 install()
 from bs4 import Tag, BeautifulSoup
-from convert_math import *
-from parse_chat import *
+from parse_chat import process_children, check_navigable_string
 from md_to_tex_pipeline import convert_from_tex_to_pdf
 
 
@@ -40,7 +39,7 @@ def process_chat_elements(element: Tag) -> str | None:
     return latex_block.format(header, latex, header)
 
 
-def main():
+def run_all_files():
     gpt_dir = Path("./gpt")
     (gpt_dir / "tex").mkdir(exist_ok=True, parents=True)
     (gpt_dir / "pdf").mkdir(exist_ok=True, parents=True)
@@ -60,15 +59,16 @@ def main():
         logger.info(f"File {html_file_path.stem}.tex written")
     convert_from_tex_to_pdf(tex_dir=gpt_dir / "tex", pdf_dir=gpt_dir / "pdf")
 
+def test_one_file():
+    html_file_path = Path("./drones - Branch · Branch · Skybrush Studio API.html")
+    with open(html_file_path, "r", encoding="utf8") as fp:
+        html = fp.read()
+    latex = chat_html_to_latex(html)
+
+    with open("index.tex", "w", encoding="utf8") as w:
+        w.write(latex)
 
 if __name__ == "__main__":
     cwd = Path.cwd()
     logger.add(cwd / "logs/chat_gpt_parse.log", mode="w")
-    main()
-    # html_file_path = Path("./drones - Branch · Branch · Skybrush Studio API.html")
-    # with open(html_file_path, "r", encoding="utf8") as fp:
-    #     html = fp.read()
-    # latex = chat_html_to_latex(html)
-    #
-    # with open("index.tex", "w", encoding="utf8") as w:
-    #     w.write(latex)
+    run_all_files()
