@@ -6,7 +6,7 @@ from loguru import logger
 from pathlib import Path
 from bs4 import NavigableString, Tag
 import re
-from convert_math import convert_math_to_latex
+from convert_math import *
 
 ele_to_tex_dict = {
     "strong": {

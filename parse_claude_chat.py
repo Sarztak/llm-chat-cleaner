@@ -2,6 +2,7 @@ from rich.traceback import install
 
 install()
 from pathlib import Path
+import argparse
 from bs4 import Tag, BeautifulSoup
 from convert_math import *
 from parse_chat import *
@@ -87,7 +88,9 @@ def process_chat_elements(element: Tag) -> str | None:
     if str(element.get("class", "")).startswith(("mb-1 mt-6 group", "mb-1 mt-1")):
         # the mb-1 mt-6 group or mb-1 mt-1 groups are fragile and they can change
         header = "userprompt"
-        chat_div = element.find("div", attrs={"data-testid": "user-message"})
+        # it can so happen that whenever I paste a very large content into the chat claude will only display a thumbnail.
+        # in that case if I don't type into the dialog box, user-message tag does not exists and the program will error out
+        chat_div = element.find("div", attrs={"data-testid": re.compile("user-message|file-thumbnail")})
         img_tags = element.find_all("img")
         new_tag = soup.new_tag("div")
         for img_tag in img_tags:
@@ -126,19 +129,32 @@ def run_all_files():
     convert_from_tex_to_pdf(tex_dir=claude_dir / "tex", pdf_dir=claude_dir / "pdf")
 
 def test_one_file():
-    html_file_path = Path(
-        "./claude/html/Structure of Academic Research Papers - Claude.html"
-    )
+    cwd = Path.cwd()
+    parse = argparse.ArgumentParser()
+    parse.add_argument("file_path")
+    args = parse.parse_args()
+    html_file_path = Path(args.file_path)
 
+    logger.info(f"file_path: {html_file_path}")
+
+    file_name = html_file_path.stem # name of file without html extension
     with open(html_file_path, "r", encoding="utf8") as fp:
         html = fp.read()
     updated_html = fix_img_path(html)
     latex = chat_html_to_latex(updated_html)
 
-    with open("index.tex", "w", encoding="utf8") as w:
+    # create a directory to store the result
+    out_dir = cwd / file_name
+    out_dir.mkdir(exist_ok=True)
+
+    # write output 
+    with open(out_dir / f"{file_name}.tex", "w", encoding="utf8") as w:
         w.write(latex)
+
+    convert_from_tex_to_pdf(tex_dir=out_dir, pdf_dir=out_dir)
 
 if __name__ == "__main__":
     cwd = Path.cwd()
     logger.add(cwd / "logs/chat_claude_parse.log", mode="w")
-    run_all_files()
+    # run_all_files()
+    test_one_file()

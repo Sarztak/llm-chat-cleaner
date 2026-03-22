@@ -54,7 +54,7 @@ def convert_from_tex_to_pdf(tex_dir: Path, pdf_dir: Path) -> None:
 
     """clear the main.aux, main.log and main.out files before running the command since these files can stop the execution from processing to completing"""
 
-    for path in tex_dir.iterdir():
+    for path in tex_dir.glob("*.tex"):
         logger.info(f"Opening file: {path.name}")
         with open(main_tex_path, "w", encoding="utf8") as w:
             tex_path = str(cwd / path)
